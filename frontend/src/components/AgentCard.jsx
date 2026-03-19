@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Brain, Zap, AlertCircle, Clock } from 'lucide-react';
+import { Brain, Zap, AlertCircle, Clock, Copy, Check } from 'lucide-react';
 
 export default function AgentCard({ agent }) {
   const [isFlipped, setIsFlipped] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const diffColor = (diff) => {
     const colors = {
@@ -107,8 +108,35 @@ export default function AgentCard({ agent }) {
             
             <div className="mb-5">
               <div style={{ fontSize: '0.65rem', fontWeight: '700', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>INSTRUCTIONS</div>
-              <div style={{ background: 'var(--bg-primary)', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--card-border)' }}>
-                <p style={{ fontSize: '0.75rem', color: 'var(--text-primary)', lineHeight: '1.5', whiteSpace: 'pre-wrap' }}>
+              <div style={{ background: 'var(--bg-primary)', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--card-border)', position: 'relative' }}>
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent card flipping
+                    navigator.clipboard.writeText(agent.instructions);
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 2000);
+                  }}
+                  style={{
+                    position: 'absolute',
+                    top: '0.5rem',
+                    right: '0.5rem',
+                    border: 'none',
+                    background: 'transparent',
+                    cursor: 'pointer',
+                    color: 'var(--text-secondary)',
+                    padding: '0.25rem',
+                    borderRadius: '4px',
+                    transition: 'all 0.2s',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                  title="Copy instructions"
+                  className="hover:bg-[rgba(255,255,255,0.05)]"
+                >
+                  {copied ? <Check size={14} style={{ color: '#10b981' }} /> : <Copy size={14} />}
+                </button>
+                <p style={{ fontSize: '0.75rem', color: 'var(--text-primary)', lineHeight: '1.5', whiteSpace: 'pre-wrap', paddingRight: '1.5rem' }}>
                   {agent.instructions}
                 </p>
               </div>
