@@ -1,13 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ConnectorSelector from './components/ConnectorSelector';
+import ContextPanel from './components/ContextPanel';
 import AgentCard from './components/AgentCard';
-import { Sparkles, Loader2 } from 'lucide-react';
+import { Sparkles, Loader2, Moon, Sun } from 'lucide-react';
 
 export default function App() {
   const [selectedConnectors, setSelectedConnectors] = useState([]);
+  const [userContext, setUserContext] = useState('');
   const [agents, setAgents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+
+  useEffect(() => {
+    document.documentElement.className = theme;
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
 
   const handleToggleConnector = (connectorName) => {
     setSelectedConnectors(prev => 
@@ -31,7 +43,10 @@ export default function App() {
       const response = await fetch('http://localhost:3001/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ connectors: selectedConnectors }),
+        body: JSON.stringify({ 
+          connectors: selectedConnectors,
+          context: userContext 
+        }),
       });
 
       if (!response.ok) {
@@ -50,15 +65,52 @@ export default function App() {
   return (
     <div className="container">
       {/* Header */}
-      <header className="header">
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.4rem 0.8rem', borderRadius: '9999px', background: 'rgba(139, 92, 246, 0.15)', border: '1px solid rgba(139, 92, 246, 0.3)', marginBottom: '1rem' }}>
-          <Sparkles className="text-purple-400" size={16} />
-          <span style={{ fontSize: '0.75rem', fontWeight: '600', color: '#a78bfa' }}>GEMINI ENTERPRISE</span>
+      <header className="header" style={{ paddingTop: '1rem', position: 'relative' }}>
+        <div style={{ position: 'absolute', top: '1rem', right: '0' }}>
+          <button 
+            onClick={toggleTheme}
+            className="theme-toggle"
+            style={{
+              background: 'var(--bg-glass)',
+              border: '1px solid var(--card-border)',
+              padding: '0.6rem',
+              borderRadius: '12px',
+              cursor: 'pointer',
+              color: 'var(--text-primary)',
+              boxShadow: 'var(--card-shadow)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+          </button>
         </div>
-        <h1 style={{ fontSize: '3.5rem', fontWeight: 'bold', marginBottom: '1rem', background: 'linear-gradient(to right, #a78bfa, #ec4899, #3b82f6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+        <div>
+          <div style={{ 
+            display: 'inline-flex', 
+            alignItems: 'center', 
+            gap: '0.5rem', 
+            padding: '0.4rem 0.8rem', 
+            borderRadius: '9999px', 
+            background: 'var(--accent-glow)', 
+            border: '1px solid var(--card-border)', 
+            marginBottom: '1.5rem' 
+          }}>
+            <Sparkles size={14} style={{ color: '#6366f1' }} />
+            <span style={{ fontSize: '0.7rem', fontWeight: 'bold', color: '#6366f1', letterSpacing: '0.05em' }}>GEMINI ENTERPRISE</span>
+          </div>
+        </div>
+        <h1 className="title-gradient" style={{ 
+          fontSize: '3.5rem', 
+          fontWeight: '800', 
+          marginBottom: '1rem', 
+          letterSpacing: '-0.02em'
+        }}>
           Agent Architect
         </h1>
-        <p style={{ color: '#9ca3af', maxWidth: '600px', margin: '0 auto', fontSize: '1.1rem' }}>
+        <p style={{ color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto', fontSize: '1.1rem', lineHeight: '1.6' }}>
           Select your enterprise tools and let Gemini reveal the high-ROI agents you can build today in a low-code environment.
         </p>
       </header>
@@ -67,10 +119,17 @@ export default function App() {
       <ConnectorSelector 
         selectedConnectors={selectedConnectors} 
         onToggle={handleToggleConnector} 
+        theme={theme}
+      />
+
+      {/* Context Panel */}
+      <ContextPanel 
+        context={userContext} 
+        onChange={setUserContext} 
       />
 
       {/* Action Button */}
-      <div className="flex-center" style={{ margin: '3rem 0' }}>
+      <div className="flex-center" style={{ margin: '3.5rem 0' }}>
         <button
           onClick={generateAgents}
           disabled={loading || selectedConnectors.length === 0}
@@ -92,17 +151,28 @@ export default function App() {
 
       {/* Error State */}
       {error && (
-        <div className="glass" style={{ padding: '1rem', borderRadius: '12px', border: '1px solid rgba(239, 68, 68, 0.5)', background: 'rgba(127, 29, 29, 0.1)', color: '#f87171', textAlign: 'center', maxWidth: '400px', margin: '0 auto 2rem auto' }}>
+        <div style={{ 
+          padding: '1rem', 
+          borderRadius: '16px', 
+          border: '1px solid #fee2e2', 
+          background: '#fef2f2', 
+          color: '#b91c1c', 
+          textAlign: 'center', 
+          maxWidth: '450px', 
+          margin: '0 auto 2rem auto',
+          fontSize: '0.9rem',
+          fontWeight: '500'
+        }}>
           {error}
         </div>
       )}
 
       {/* Results Grid */}
       {agents.length > 0 && (
-        <div style={{ marginTop: '3rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
-            <div style={{ height: '0.5rem', width: '0.5rem', borderRadius: '50%', background: '#4ade80' }}></div>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#e5e7eb' }}>Generated Agent Blueprints</h2>
+        <div style={{ marginTop: '4rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem', paddingLeft: '0.5rem' }}>
+            <div style={{ height: '0.6rem', width: '0.6rem', borderRadius: '50%', background: '#10b981' }}></div>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: '700', color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>Recommended Agent Blueprints</h2>
           </div>
           
           <div className="agent-grid">
@@ -115,8 +185,8 @@ export default function App() {
 
       {/* Empty State */}
       {!loading && agents.length === 0 && !error && (
-        <div style={{ textAlign: 'center', padding: '4rem 0', color: '#6b7280' }}>
-          <p>Select connectors and click generate to see results.</p>
+        <div style={{ textAlign: 'center', padding: '5rem 0', color: 'var(--text-secondary)' }}>
+          <p style={{ opacity: 0.7 }}>Select connectors and click generate to see architected results.</p>
         </div>
       )}
     </div>

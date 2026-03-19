@@ -39,11 +39,22 @@ const CONNECTOR_LIST = [
   { id: 'gsearch', name: 'Google Search', icon: Search, color: '#4285f4' },
 ];
 
-export default function ConnectorSelector({ selectedConnectors, onToggle }) {
+export default function ConnectorSelector({ selectedConnectors, onToggle, theme }) {
+  const getIconColor = (item, isSelected) => {
+    if (!isSelected) return '#94a3b8';
+    if (theme === 'dark') {
+      // Lighten very dark brand colors for night mode
+      if (item.color === '#24292e') return '#ffffff'; // GitHub
+      if (item.color === '#4A154B') return '#e2addd'; // Slack
+      if (item.color === '#555a99') return '#9fa4d9'; // Teams
+    }
+    return item.color;
+  };
+
   return (
-    <div className="glass p-6 mb-8">
-      <h2 className="text-xl font-semibold mb-4 text-purple-400">1. Select Connectors</h2>
-      <p className="text-gray-400 text-sm mb-6">Choose the data sources you want your low-code agent to orchestrate.</p>
+    <div className="glass p-8 mb-12">
+      <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '0.5rem', color: 'var(--text-primary)' }}>1. Select Connectors</h2>
+      <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '2rem', opacity: 0.8 }}>Choose the enterprise data sources you want the Gemini agent to orchestrate.</p>
       
       <div className="connector-grid">
         {CONNECTOR_LIST.map((item) => {
@@ -54,31 +65,39 @@ export default function ConnectorSelector({ selectedConnectors, onToggle }) {
             <button
               key={item.id}
               onClick={() => onToggle(item.name)}
-              className={`flex flex-col items-center justify-center p-4 rounded-xl transition-all duration-300 border
+              className={`flex flex-col items-center justify-center p-5 rounded-2xl transition-all duration-200 border
                 ${isSelected 
-                  ? 'shadow-lg' 
-                  : 'bg-gray-800/40 border-gray-700/50 hover:border-gray-600 hover:bg-gray-800/60'
+                  ? 'shadow-md' 
+                  : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'
                 }
               `}
               style={isSelected ? {
-                backgroundColor: `${item.color}26`, /* 15% fill overlay for professional transparent blend */
+                backgroundColor: `${item.color}22`, 
                 borderColor: item.color,
-                borderStyle: 'solid', /* FIX OUTSET BORDER RECTANGLE BUG */
-                boxShadow: `0 6px 16px -3px ${item.color}40`
-              } : {}}
+                borderWidth: '2px',
+                transform: 'scale(1.02)'
+              } : {
+                backgroundColor: 'var(--bg-secondary)',
+                borderColor: 'var(--card-border)'
+              }}
             >
               <div 
-                className={`p-2 rounded-full mb-2 transition-transform duration-150 ${isSelected ? 'scale-110' : ''}`}
+                className={`p-2 rounded-xl mb-3 transition-all duration-200 ${isSelected ? 'scale-110' : ''}`}
+                style={isSelected ? { background: `${item.color}33` } : {}}
               >
                 <Icon 
-                  size={22} 
+                  size={24} 
                   style={{ 
-                    color: isSelected ? item.color : 'var(--text-secondary)',
-                    filter: isSelected ? `drop-shadow(0 0 6px ${item.color}66)` : 'none'
+                    color: getIconColor(item, isSelected),
+                    strokeWidth: isSelected ? 2.5 : 2
                   }} 
                 />
               </div>
-              <span className={`text-xs ${isSelected ? 'font-semibold text-white' : 'text-gray-400'}`}>
+              <span style={{ 
+                fontSize: '0.75rem', 
+                fontWeight: isSelected ? '700' : '500',
+                color: isSelected ? 'var(--text-primary)' : 'var(--text-secondary)'
+              }}>
                 {item.name}
               </span>
             </button>

@@ -4,13 +4,15 @@ import { Brain, Zap, AlertCircle } from 'lucide-react';
 export default function AgentCard({ agent }) {
   const [isFlipped, setIsFlipped] = useState(false);
 
-  const getDifficultyColor = (diff) => {
-    switch (diff?.toLowerCase()) {
-      case 'easy': return 'text-green-400 border-green-900/30 bg-green-900/10';
-      case 'medium': return 'text-yellow-400 border-yellow-900/30 bg-yellow-900/10';
-      case 'hard': return 'text-red-400 border-red-900/30 bg-red-900/10';
-      default: return 'text-blue-400 border-blue-900/30 bg-blue-900/10';
-    }
+  const diffColor = (diff) => {
+    const colors = {
+      easy: { text: '#059669', border: '#10b98144', bg: '#10b98111' },
+      medium: { text: '#d97706', border: '#fbbf2444', bg: '#fbbf2411' },
+      hard: { text: '#dc2626', border: '#ef444444', bg: '#ef444411' },
+      default: { text: '#4f46e5', border: '#6366f144', bg: '#6366f111' }
+    };
+    const c = colors[diff?.toLowerCase()] || colors.default;
+    return { color: c.text, borderColor: c.border, backgroundColor: c.bg };
   };
 
   return (
@@ -21,77 +23,86 @@ export default function AgentCard({ agent }) {
       <div className="flip-card-inner">
         
         {/* Front of Card */}
-        <div className="flip-card-front glass p-6 flex flex-col justify-between glow-hover">
+        <div className="flip-card-front p-6 flex flex-col justify-between">
           <div>
-            <div className="flex justify-between items-start mb-4">
-              <div className="p-3 bg-purple-900/30 rounded-xl">
-                <Brain className="text-purple-400" size={24} />
+            <div className="flex justify-between items-start mb-5">
+              <div style={{ padding: '0.75rem', background: 'var(--accent-glow)', borderRadius: '14px', border: '1px solid var(--card-border)' }}>
+                <Brain style={{ color: '#6366f1' }} size={24} />
               </div>
-              <span className={`text-xs px-2 py-1 rounded-full border ${getDifficultyColor(agent.difficulty)}`}>
+              <span 
+                className="diff-badge"
+                style={diffColor(agent.difficulty)}
+              >
                 {agent.difficulty || 'Medium'}
               </span>
             </div>
             
-            <h3 className="text-xl font-bold mb-2 text-white tracking-tight">{agent.name}</h3>
-            <p className="text-gray-400 text-sm leading-relaxed">{agent.summary}</p>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: '800', marginBottom: '0.75rem', color: 'var(--text-primary)', letterSpacing: '-0.02em', lineHeight: '1.2' }}>{agent.name}</h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: '1.5' }}>{agent.summary}</p>
           </div>
           
           <div className="mt-auto">
-            <div className="text-xs text-gray-500 mb-1">CONNECTORS</div>
-            <p className="text-xs text-gray-300 font-medium">
+            <div style={{ fontSize: '0.6rem', fontWeight: '800', color: 'var(--text-secondary)', opacity: 0.6, letterSpacing: '0.05em', marginBottom: '0.4rem' }}>CONNECTORS</div>
+            <p style={{ fontSize: '0.75rem', color: 'var(--text-primary)', fontWeight: '600' }}>
               {agent.connectors?.join(' • ') || 'General'}
             </p>
           </div>  
           
-          <div className="mt-4 text-center text-xs text-purple-400 font-semibold">
-            Click to view details
+          <div style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.7rem', color: '#6366f1', fontWeight: '700', opacity: 0.8 }}>
+            Click for Blueprint →
           </div>
         </div>
 
         {/* Back of Card */}
-        <div className="flip-card-back glass p-8 flex flex-col overflow-y-auto glow-hover custom-scrollbar">
+        <div className="flip-card-back p-8 flex flex-col custom-scrollbar">
           
-          <div className="flex items-center gap-2 mb-4 border-b border-gray-800 pb-3">
-            <Zap className="text-yellow-400" size={20} />
-            <h4 className="font-bold text-sm tracking-wider text-gray-200">AGENT BLUEPRINT</h4>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--card-border)', paddingBottom: '1rem' }}>
+            <Zap style={{ color: '#f59e0b' }} size={18} />
+            <h4 style={{ fontSize: '0.75rem', fontWeight: '800', color: 'var(--text-primary)', letterSpacing: '0.05em' }}>AGENT BLUEPRINT</h4>
           </div>
           
           <div className="flex-1 flex flex-col">
-            <div className="mb-4">
-              <div className="text-xs text-gray-500 mb-1">RECOMMENDED MODEL</div>
-              <div className="text-white text-sm font-medium bg-gray-800/50 px-3 py-2 rounded-lg border border-gray-700/30">
+            <div className="mb-5">
+              <div style={{ fontSize: '0.65rem', fontWeight: '700', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>MODEL</div>
+              <div style={{ 
+                fontSize: '0.8rem', 
+                fontWeight: '600', 
+                color: 'var(--text-primary)', 
+                background: 'var(--accent-glow)', 
+                padding: '0.6rem 0.8rem', 
+                borderRadius: '10px', 
+                border: '1px solid var(--card-border)' 
+              }}>
                 {agent.model || 'Gemini 2.5 Pro'}
               </div>
             </div>
 
             {agent.schedule && (
-              <div className="mb-4">
-                <div className="text-xs text-gray-500 mb-1">RECURRING SCHEDULE TRIGGER</div>
-                <div className="bg-purple-950/30 p-3 rounded-lg border border-purple-800/40">
-                  <div className="text-xs font-bold text-purple-300 mb-1">
-                    ⏰ {agent.schedule.trigger}
+              <div className="mb-5">
+                <div style={{ fontSize: '0.65rem', fontWeight: '700', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>TRIGGER & PROMPT</div>
+                <div style={{ background: 'rgba(245, 158, 11, 0.05)', padding: '0.75rem', borderRadius: '12px', border: '1px solid rgba(245, 158, 11, 0.2)' }}>
+                  <div style={{ fontSize: '0.7rem', fontWeight: '800', color: '#f59e0b', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                    <span>⏰</span> {agent.schedule.trigger}
                   </div>
-                  <p className="text-xs text-gray-400 italic bg-black/20 p-2 rounded border border-purple-900/30">
+                  <p style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', fontStyle: 'italic', background: 'var(--bg-secondary)', padding: '0.5rem', borderRadius: '6px', border: '1px solid var(--card-border)' }}>
                     "{agent.schedule.prompt}"
                   </p>
                 </div>
               </div>
             )}
             
-            <div className="mb-4">
-              <div className="text-xs text-gray-500 mb-1">SYSTEM INSTRUCTIONS</div>
-              <div className="bg-gray-950/50 p-3 rounded-lg border border-gray-800/80">
-                <p className="text-xs text-gray-300 leading-relaxed whitespace-pre-wrap">
+            <div className="mb-5">
+              <div style={{ fontSize: '0.65rem', fontWeight: '700', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>INSTRUCTIONS</div>
+              <div style={{ background: 'var(--bg-primary)', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--card-border)' }}>
+                <p style={{ fontSize: '0.75rem', color: 'var(--text-primary)', lineHeight: '1.5', whiteSpace: 'pre-wrap' }}>
                   {agent.instructions}
                 </p>
               </div>
             </div>
 
             {agent.data_stores && agent.data_stores.length > 0 && (
-              <div className="mb-4">
-                <div className="text-xs text-gray-500 mb-1 flex items-center gap-1">
-                  <span>GROUNDING (DATA STORES)</span>
-                </div>
+              <div className="mb-5">
+                <div style={{ fontSize: '0.65rem', fontWeight: '700', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>DATA STORES</div>
                 <div className="flex flex-wrap gap-1">
                   {agent.data_stores.map((store, idx) => (
                     <span key={idx} className="chip chip-grounding">
@@ -103,8 +114,8 @@ export default function AgentCard({ agent }) {
             )}
 
             {agent.tools && agent.tools.length > 0 && (
-              <div className="mb-4">
-                <div className="text-xs text-gray-500 mb-1">ACTIONS (CUSTOM TOOLS)</div>
+              <div className="mb-5">
+                <div style={{ fontSize: '0.65rem', fontWeight: '700', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>ACTIONS</div>
                 <div className="flex flex-wrap gap-1">
                   {agent.tools.map((tool, idx) => (
                     <span key={idx} className="chip chip-action">
@@ -116,7 +127,7 @@ export default function AgentCard({ agent }) {
             )}
           </div>
           
-          <div className="mt-auto pt-3 text-center text-xs text-gray-500 border-t border-gray-800/50">
+          <div style={{ marginTop: 'auto', paddingTop: '1rem', textAlign: 'center', fontSize: '0.7rem', color: 'var(--text-secondary)', borderTop: '1px solid var(--card-border)' }}>
             Click to flip back
           </div>
         </div>

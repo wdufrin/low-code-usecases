@@ -80,16 +80,29 @@ const responseSchema = {
 };
 
 app.post('/api/generate', async (req, res) => {
-  const { connectors } = req.body;
+  const { connectors, context } = req.body;
 
   if (!connectors || !Array.isArray(connectors) || connectors.length === 0) {
     return res.status(400).json({ error: 'Connectors are required' });
   }
 
   try {
+    let contextPrompt = '';
+    if (context && typeof context === 'string' && context.trim() !== '') {
+      contextPrompt = `
+      **USER CONTEXT**:
+      The user has provided the following background to tailor these blueprints:
+      "${context.trim()}"
+
+      **CRITICAL INSTRUCTION**: You MUST prioritize designing agents that solve the specific goals or enhance workflows described in the user context above responsibly.
+      `;
+    }
+
     const prompt = `
       You are an expert Enterprise AI solutions architect designing for Gemini Enterprise.
       Generate 5 or 6 low-code agent blueprints that capitalize on the selected tool connectors: ${connectors.join(', ')}.
+      
+      ${contextPrompt}
       
       **CRITICAL ARCHITECTURE CONSTRAINTS**: 
       1. **Execution model**: Low-code agents **CANNOT** continuous background-monitor or background-process real-time listeners (e.g. do not say "Watch inbox"). They are trigger/schedule based (e.g., "Run Daily at 9:00 AM to qualify leads").

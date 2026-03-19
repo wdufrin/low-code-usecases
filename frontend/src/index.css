@@ -1,43 +1,61 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Space+Grotesk:wght@400;700&display=swap');
 
 :root {
-  /* Lighter, softer background palette */
-  --bg-color: #090a0f; /* Slightly lighter deep slate */
-  --card-bg: rgba(255, 255, 255, 0.04); /* Frosty glass on light accents */
-  --card-border: rgba(255, 255, 255, 0.12);
-  --accent-primary: #9333ea; /* Soft Violet */
-  --accent-secondary: #2563eb; /* Soft Blue */
-  --text-primary: #f9fafb;
-  --text-secondary: #cbd5e1;
-  --grid-color: rgba(255, 255, 255, 0.03);
+  /* Professional Light Palette */
+  --bg-primary: #f8fafc; /* Slate 50 */
+  --bg-secondary: #ffffff;
+  --bg-glass: rgba(255, 255, 255, 0.8);
+  --card-border: #e2e8f0; /* Slate 200 */
+  --text-primary: #0f172a; /* Slate 900 */
+  --text-secondary: #475569; /* Slate 600 */
+  --grid-color: rgba(0, 0, 0, 0.03);
+  --accent-glow: rgba(124, 58, 237, 0.03);
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --card-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --text-gradient: linear-gradient(to right, #1e1b4b, #4338ca, #1e40af);
+}
+
+.dark {
+  /* Professional Night Palette */
+  --bg-primary: #0b0e14; /* Deep dark slate */
+  --bg-secondary: #151921; /* Slightly lighter card background */
+  --bg-glass: rgba(21, 25, 33, 0.85);
+  --card-border: #2d3644;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --grid-color: rgba(255, 255, 255, 0.025);
+  --accent-glow: rgba(124, 58, 237, 0.08);
+  --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+  --card-shadow-hover: 0 25px 30px -10px rgba(0, 0, 0, 0.6);
+  --text-gradient: linear-gradient(to right, #e0e7ff, #818cf8, #c7d2fe);
 }
 
 body {
   margin: 0;
   font-family: 'Outfit', sans-serif;
-  background-color: var(--bg-color);
+  background-color: var(--bg-primary);
   color: var(--text-primary);
-  /* Increased density mesh and airier vibe */
+  transition: background-color 0.4s ease, color 0.4s ease;
+  /* Submerged depth effect with variables */
   background-image: 
-    radial-gradient(at 10% 20%, rgba(147, 51, 234, 0.25) 0px, transparent 45%),
-    radial-gradient(at 90% 80%, rgba(37, 99, 235, 0.25) 0px, transparent 45%),
-    radial-gradient(at 50% 50%, rgba(236, 72, 153, 0.15) 0px, transparent 40%),
+    radial-gradient(at 0% 0%, var(--accent-glow) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, var(--accent-glow) 0px, transparent 50%),
     linear-gradient(var(--grid-color) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
-  background-size: 100% 100%, 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+  background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
   min-height: 100vh;
   overflow-x: hidden;
 }
 
-/* Softer Glassmorphism */
+/* Professional Card elevation */
 .glass {
-  background: rgba(22, 28, 45, 0.7); /* Darker body for contrast but lots of roundness */
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--card-border);
-  border-radius: 32px; /* SUPER ROUND CORNERS */
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Bouncy physics */
+  border-radius: 24px;
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* 3D Flip Card */
@@ -48,12 +66,6 @@ body {
   perspective: 1000px;
   cursor: pointer;
   margin: 0 auto;
-  transition: transform 0.3s ease;
-}
-
-/* Lift on hover for fun factor */
-.flip-card:hover {
-  transform: translateY(-8px) scale(1.03);
 }
 
 .flip-card-inner {
@@ -61,7 +73,7 @@ body {
   width: 100%;
   height: 100%;
   text-align: left;
-  transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* Playful flip */
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   transform-style: preserve-3d;
 }
 
@@ -78,36 +90,37 @@ body {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  border-radius: 32px; /* MATCH CONTAINER */
+  border-radius: 24px;
   border: 1px solid var(--card-border);
-  background: rgba(17, 24, 39, 0.85); /* Glossy Backing */
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+  background: var(--bg-secondary);
+  box-shadow: var(--card-shadow);
+  transition: background-color 0.4s ease, border-color 0.4s ease;
 }
 
 .flip-card-back {
   transform: rotateY(180deg);
   overflow-y: auto;
-  background: rgba(15, 23, 42, 0.9); /* Slightly variant detailed backing */
 }
 
-.flip-card-back::-webkit-scrollbar {
-  width: 4px;
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
 }
 
-.flip-card-back::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.flip-card-back::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.25);
-  border-radius: 4px;
+::-webkit-scrollbar-thumb {
+  background: var(--card-border);
+  border-radius: 10px;
 }
 
 /* Layout */
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 4rem 1.5rem;
+  padding: 2rem 1.5rem 4rem 1.5rem;
 }
 
 .header {
@@ -123,67 +136,7 @@ body {
 }
 
 .connector-grid button {
-  border-radius: 24px; /* Softer connector buttons */
-}
-
-.agent-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-  gap: 2.5rem;
-  justify-content: center;
-}
-
-.flex-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* Bubble capsule button style */
-.btn-generate {
-  background: linear-gradient(135deg, #a855f7, #3b82f6);
-  color: white;
-  border: none;
-  padding: 1.25rem 3rem;
-  border-radius: 50px; /* PILL SHAPE */
-  font-weight: 700;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  box-shadow: 0 10px 25px rgba(168, 85, 247, 0.3);
-}
-
-.btn-generate:hover:not(:disabled) {
-  transform: translateY(-4px) scale(1.05);
-  box-shadow: 0 15px 35px rgba(168, 85, 247, 0.5);
-}
-
-.btn-generate:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  background: #1f2937;
-}
-
-/* Custom Scrollbar for Card Back */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(139, 92, 246, 0.3);
-  border-radius: 4px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(139, 92, 246, 0.5);
+  border-radius: 16px;
 }
 
 .agent-grid {
@@ -193,47 +146,142 @@ body {
   justify-content: center;
 }
 
-/* Chip styles for Agent blueprint */
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Refined Pill Button */
+.btn-generate {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  border: none;
+  padding: 1rem 2.5rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
+}
+
+.btn-generate:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 25px -5px rgba(99, 102, 241, 0.4);
+}
+
+.btn-generate:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #94a3b8;
+  box-shadow: none;
+}
+
+/* Professional Chip/Bubble Styles */
 .chip {
   display: inline-block;
-  font-size: 0.65rem; /* Slightly smaller for dense info */
-  padding: 0.2rem 0.5rem;
-  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.35rem 0.8rem; /* INCREASED PADDING */
+  border-radius: 9999px; /* PILL SHAPE */
   border: 1px solid transparent;
-  margin: 0.1rem;
+  margin: 0.125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  transition: all 0.2s ease;
 }
 
 .chip-grounding {
-  background: rgba(59, 130, 246, 0.15);
+  background: rgba(59, 130, 246, 0.1);
   border-color: rgba(59, 130, 246, 0.3);
-  color: #60a5fa;
+  color: #3b82f6;
 }
 
 .chip-action {
-  background: rgba(245, 158, 11, 0.15);
+  background: rgba(245, 158, 11, 0.1);
   border-color: rgba(245, 158, 11, 0.3);
-  color: #fbbf24;
+  color: #f59e0b;
 }
 
-/* Utility Classes for AgentCard (Tailwind fallbacks) */
+/* Difficulty Bubbles - Professional Pills */
+.diff-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 800;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* Utility Classes */
 .p-6 { padding: 1.5rem; }
 .p-8 { padding: 2rem; }
 .mb-4 { margin-bottom: 1rem; }
 .mb-1 { margin-bottom: 0.25rem; }
 .mt-4 { margin-top: 1rem; }
-.pb-3 { padding-bottom: 0.75rem; }
-.pb-6 { padding-bottom: 1.5rem; }
-.h-12 { height: 3rem; }
-.w-full { width: 100%; }
-.shrink-0 { flex-shrink: 0; }
-.flex-1 { flex: 1 1 0%; }
-.justify-between { justify-content: space-between; }
 .mt-auto { margin-top: auto; }
+.flex-1 { flex: 1 1 0%; }
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.text-center { text-align: center; }
+.w-full { width: 100%; }
 
-/* Ensure custom-scrollbar height works with overflow */
-.flip-card-back.custom-scrollbar {
-  display: flex;
-  flex-direction: column;
+/* Theme Toggle Hover */
+.theme-toggle:hover {
+  transform: translateY(-2px);
+  background: var(--bg-secondary) !important;
 }
+
+.title-gradient {
+  background: var(--text-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+/* Form Styles */
+.form-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.9;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--card-border);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-family: 'Outfit', sans-serif;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
 
 
