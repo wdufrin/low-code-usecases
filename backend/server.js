@@ -1,12 +1,18 @@
 import express from 'express';
 import cors from 'cors';
 import { GoogleGenAI } from '@google/genai';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001; // Support Cloud Run port
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Initialize Gemini Client with Vertex AI
 // Using the project approved by the user
@@ -45,7 +51,7 @@ const agentSchema = {
     },
     instructions: { 
         type: 'string', 
-        description: 'Detailed step-by-step operational instructions for the agent.' 
+        description: 'Operational instructions framed AS A DIRECT PROMPT for an AI Agent Builder Assistant (e.g. "Configure an agent that...", "Ground with X..."). tell the assistant exactly how to set up this agent.' 
     },
     data_stores: {
         type: 'array',
@@ -70,7 +76,7 @@ const agentSchema = {
         description: 'Implementation difficulty: Easy, Medium, or Hard.' 
     }
   },
-  required: ['name', 'summary', 'connectors', 'model', 'instructions', 'data_stores', 'tools', 'schedule', 'difficulty']
+  required: ['name', 'summary', 'connectors', 'model', 'instructions', 'data_stores', 'tools', 'difficulty']
 };
 
 const responseSchema = {
@@ -105,11 +111,12 @@ app.post('/api/generate', async (req, res) => {
       ${contextPrompt}
       
       **CRITICAL ARCHITECTURE CONSTRAINTS**: 
-      1. **Execution model**: Low-code agents **CANNOT** continuous background-monitor or background-process real-time listeners (e.g. do not say "Watch inbox"). They are trigger/schedule based (e.g., "Run Daily at 9:00 AM to qualify leads").
+      1. **Execution model**: Low-code agents can be EITHER **automated recurring schedules** (e.g., Daily Leads breakdown) OR **on-demand tools** triggered manually by a user to automate a discrete workflow efficiently. They CANNOT continuous background-monitor (e.g. do not say "Watch inbox"). If an agent is purely on-demand for manual execution, **OMIT the schedule property object entirely**.
       2. **Action strictly alignment limitations**:
          * **Grounding-ONLY (Ingestion/Federation with NO mutation)**: HubSpot, Box, Dropbox, Linear, Notion. For these tools, the agent CANNOT create, update, or mutate data list items (e.g., absolutely DO NOT say "Create a deal in HubSpot"). They can only **Search/Read** as a GROUNDING context datastore safely transparent cleanly overlay framing setup.
          * **Mutation Allowed (Endpoint Action support)**: GitHub (comment, merge, branch), Jira (create/update issue), Outlook (send mail, create contact), OneDrive/SharePoint (upload/download file, create folder), MS Teams (send message), Monday (create workspace), Shopify (create order), ServiceNow/Zendesk (incident/tickets).
-      
+      3. **Instructions Format**: Write the \`instructions\` field explicitly written AS A PROMPT FOR AN AI AGENT BUILDER ASSISTANT to execute. Frame it as a configuration directive (e.g., "Create an agent that automates X...", "Configure this agent with the following step-by-step instructions: 1. Ground with Z...") making it directly copyable into a builder wizard safely cleanly transparently overlay trigger setup framing responsively appropriately.
+
       Generate blueprints framing accurate constraints conforming supported blueprints segmenting System Instructions, Grounding specs, Action endpoint triggers list transparent fully accurate framing schedule triggers separately correctly responsibly framing safely.
     `;
 
@@ -133,6 +140,11 @@ app.post('/api/generate', async (req, res) => {
       details: error.message 
     });
   }
+});
+
+// Fallback route serving index.html for SPA accurately
+app.use((req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.listen(port, () => {

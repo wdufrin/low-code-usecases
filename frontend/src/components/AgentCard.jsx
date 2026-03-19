@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Brain, Zap, AlertCircle } from 'lucide-react';
+import { Brain, Zap, AlertCircle, Clock } from 'lucide-react';
 
 export default function AgentCard({ agent }) {
   const [isFlipped, setIsFlipped] = useState(false);
@@ -37,7 +37,12 @@ export default function AgentCard({ agent }) {
               </span>
             </div>
             
-            <h3 style={{ fontSize: '1.25rem', fontWeight: '800', marginBottom: '0.75rem', color: 'var(--text-primary)', letterSpacing: '-0.02em', lineHeight: '1.2' }}>{agent.name}</h3>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: '800', marginBottom: '0.75rem', color: 'var(--text-primary)', letterSpacing: '-0.02em', lineHeight: '1.2', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              {agent.name}
+              {agent.schedule && agent.schedule.trigger && agent.schedule.trigger !== 'None' && (
+                <Clock size={16} style={{ color: '#f59e0b', filter: 'drop-shadow(0 0 4px rgba(245, 158, 11, 0.2))' }} />
+              )}
+            </h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: '1.5' }}>{agent.summary}</p>
           </div>
           
@@ -77,9 +82,9 @@ export default function AgentCard({ agent }) {
               </div>
             </div>
 
-            {agent.schedule && (
-              <div className="mb-5">
-                <div style={{ fontSize: '0.65rem', fontWeight: '700', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>TRIGGER & PROMPT</div>
+            <div className="mb-5">
+              <div style={{ fontSize: '0.65rem', fontWeight: '700', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>TRIGGER & PROMPT</div>
+              {agent.schedule && agent.schedule.trigger && agent.schedule.trigger !== 'None' ? (
                 <div style={{ background: 'rgba(245, 158, 11, 0.05)', padding: '0.75rem', borderRadius: '12px', border: '1px solid rgba(245, 158, 11, 0.2)' }}>
                   <div style={{ fontSize: '0.7rem', fontWeight: '800', color: '#f59e0b', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                     <span>⏰</span> {agent.schedule.trigger}
@@ -88,8 +93,17 @@ export default function AgentCard({ agent }) {
                     "{agent.schedule.prompt}"
                   </p>
                 </div>
-              </div>
-            )}
+              ) : (
+                <div style={{ background: 'rgba(99, 102, 241, 0.05)', padding: '0.75rem', borderRadius: '12px', border: '1px solid rgba(99, 102, 241, 0.2)' }}>
+                  <div style={{ fontSize: '0.7rem', fontWeight: '800', color: '#6366f1', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                    <span>🖱️</span> On-Demand Assistant
+                  </div>
+                  <p style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', fontStyle: 'italic' }}>
+                    Triggered manually by users on-demand to automate discrete workflows accurately.
+                  </p>
+                </div>
+              )}
+            </div>
             
             <div className="mb-5">
               <div style={{ fontSize: '0.65rem', fontWeight: '700', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>INSTRUCTIONS</div>
