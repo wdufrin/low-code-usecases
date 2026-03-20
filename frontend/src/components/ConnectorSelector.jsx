@@ -13,7 +13,8 @@ import {
   Users,
   HardDrive,
   MessageCircle,
-  Search
+  Search,
+  Server
 } from 'lucide-react';
 
 const CONNECTOR_LIST = [
@@ -28,6 +29,7 @@ const CONNECTOR_LIST = [
   { id: 'shopify', name: 'Shopify', icon: ShoppingBag, color: '#96bf48' },
   { id: 'outlook', name: 'Outlook', icon: Mail, color: '#0078d4' },
   { id: 'teams', name: 'MS Teams', icon: MessageSquare, color: '#555a99' },
+  { id: 'servicenow', name: 'ServiceNow', icon: Server, color: '#81b5a1' },
   
   // Google First Party (Selected from Docs)
   { id: 'drive', name: 'Google Drive', icon: FolderOpen, color: '#f4b400' },
