@@ -116,12 +116,16 @@ app.post('/api/generate', async (req, res) => {
       **Box**
       - Upload file: Uploads a new document or file to a specific folder in Box.
       - Download file: Downloads a file from Box.
-      - Copy file: Creates a duplicate of a file within a destination folder.
+      - Copy file: Creates a duplicate of a file within a destination folder while leaving the original file unchanged.
       
       **Confluence Cloud**
       - Upload attachment: Uploads a file to be attached to a specific page.
       - Download attachment: Retrieves the actual file content of a specific attachment.
       - Create page: Creates a new Confluence Cloud page.
+      
+      **Confluence Data Center**
+      - Download attachment: Download an attachment from a Confluence Data Center page.
+      - Upload attachment: Uploads an attachment to a Confluence Data Center page.
       
       **Dropbox**
       - Download file: Downloads a file from Dropbox.
@@ -136,13 +140,22 @@ app.post('/api/generate', async (req, res) => {
       - Update pull request: Update a pull request in GitHub.
       - Merge pull request: Merge a pull request in GitHub.
       
-      **Jira Cloud / Data Center**
-      - Upload attachment: Uploads an attachment to an existing issue.
-      - Change issue status: Changes an issue's status.
-      - Create comment: Creates a comment on an issue.
+      **Jira Cloud**
+      - Upload attachment: Uploads an attachment to an existing issue in Jira Cloud.
+      - Change issue status: Changes a Jira issue's status.
+      - Create comment: Creates a comment on a Jira issue.
       - Update comment: Edits an existing comment.
-      - Create issue: Creates a new issue (requires summary, project ID).
-      - Update issue: Updates an existing issue (modify summary, description, assignee).
+      - Create issue: Creates a new Jira issue (requires summary, project ID, and issue type ID).
+      - Update issue: Updates an existing issue in Jira Cloud. You need to provide the issue ID to identify it, and you can modify various fields such as the summary, description, and assignee.
+      
+      **Jira Data Center**
+      - Create issue: Create a new issue or ticket.
+      - Update issue: Change the details of a ticket, like updating its summary, description, priority, or assignee.
+      - Change Issue Status: Change the status of an issue.
+      - Create comment: Add a comment on an issue.
+      - Update comment: Modify an existing comment on an issue.
+      - Download attachment: Download an attachment from an issue.
+      - Upload attachment: Add an attachment to an issue.
       
       **Linear**
       - Create comment: Add a comment to a Linear issue.
@@ -154,20 +167,27 @@ app.post('/api/generate', async (req, res) => {
       **Microsoft OneDrive**
       - Upload file: Uploads a file to OneDrive.
       - Download file: Downloads a file from OneDrive.
-      - Create folder: Creates a new folder in OneDrive.
-      - Copy file: Copies a file in OneDrive.
+      - Create folder: Creates a new folder in OneDrive at a specified path.
+      - Copy file: Copies a file in OneDrive from a source to a destination.
       
       **Microsoft Outlook**
       - Download attachment: Downloads an attachment from an email.
-      - Create contact / Update contact: Creates or Updates a contact.
-      - Create event / Update event: Creates or Updates a calendar event.
+      - Create contact: Creates a new outlook contact.
+      - Update contact: Updates an existing Outlook contact.
+      - Create event: Creates a new event.
+      - Update event: Updates an existing event.
       - Send mail: Sends an email, including attachments.
       
       **Microsoft SharePoint**
       - Add page: Creates a new page on the SharePoint site.
-      - Check out / Check in document: Check out/in from library.
-      - Rename / Move document: Rename or move document within site.
-      - Upload / Download document: Upload or download assets attached.
+      - Check out document: Check out a document from a SharePoint library.
+      - Check in document: Check a document into a SharePoint library.
+      - Rename attachment or document: Rename an attachment or a document in a SharePoint library.
+      - Move attachment or document: Move a document from a SharePoint library to a destination library, folder, or another SharePoint site.
+      - Upload document: Uploads a file to a SharePoint list item.
+      - Download document: Downloads a file attached to a SharePoint list item.
+      - Create folder: Creates a new folder in a specified path.
+      - Add list: Creates a new structured data list (for example, tasks, contacts) on SharePoint.
       
       **Microsoft Teams**
       - Send channel message: Sends a message to a specified channel.
@@ -177,19 +197,44 @@ app.post('/api/generate', async (req, res) => {
       - Create workspace: Create a new workspace in Monday.
       
       **Notion**
-      - Create / Update database: Create or update database structures.
-      - Create / Update page: Create or update rich content pages on workspace.
+      - Create database: Creates a new database in Notion.
+      - Update database: Updates the attributes of a database in Notion.
+      - Create page: Creates a new page in Notion.
+      - Update page: Updates attributes of a Notion page.
+      - Create comment: Creates a new comment on a Notion page or block.
       
       **ServiceNow**
-      - Create / Update incident: Report and track service interruptions or updates accurately.
+      - Create incident: Creates a new ServiceNow incident to report and track service interruptions.
+      - Update incident: Updates an existing ServiceNow incident using its system ID.
       
       **Shopify**
-      - Create / Update customer: Customer management.
-      - Create order: Create new orders securely.
+      - Create customer: Create a new customer in Shopify.
+      - Update customer: Update an existing customer in Shopify.
+      - Create order: Create a new order in Shopify.
+      - Send Fulfillment Request: Sends a request to fulfill products to a fulfillment service for an order.
       
       **Zendesk**
-      - Create / Update ticket: Ticket updates cleanly.
-      - Merge tickets: Merge multiple tickets responsibly.
+      - Create ticket: Creates a new ticket in Zendesk.
+      - Update ticket: Updates an existing ticket in Zendesk.
+      - Create category: Creates a new category in Zendesk.
+      - Update post: Updates a post in Zendesk.
+      - Merge tickets: Merges multiple tickets in Zendesk.
+      - Update article: Updates an existing article in Zendesk.
+      
+      **Google Drive**
+      - Create Folder: Creates a new folder in Google Drive.
+      - Upload File: Uploads a file to Google Drive.
+      - Download File: Downloads a file from Google Drive.
+      
+      **Gmail**
+      - Send message: Sends an email message to a specified recipient.
+      
+      **Google Calendar**
+      - Create Calendar Event: Creates an event in your calendar.
+      - Update Calendar Event: Updates the metadata for an event in your primary calendar.
+      
+      **Google Chat**
+      - Send message: Sends a message to a specified Google Chat space or conversation.
       
       **CRITICAL ARCHITECTURE CONSTRAINTS**: 
       1. **Execution model**: Low-code agents can be EITHER **automated recurring schedules** (e.g., Daily Leads breakdown) OR **on-demand tools** triggered manually by a user to automate a discrete workflow efficiently. They CANNOT continuous background-monitor (e.g. do not say "Watch inbox"). If an agent is purely on-demand for manual execution, **OMIT the schedule property object entirely**.

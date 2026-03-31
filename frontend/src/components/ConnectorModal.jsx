@@ -8,11 +8,12 @@ export default function ConnectorModal({ connector, onClose, theme }) {
 
   const Icon = connector.icon;
 
-  const getAdaptedColor = (hex, isTextContext = false) => {
+  const getAdaptedColor = (hex) => {
     if (theme === 'dark') {
       if (hex === '#24292e') return '#ffffff'; // GitHub lighter
       if (hex === '#4A154B') return '#e2addd'; // Slack lighter
       if (hex === '#555a99') return '#9fa4d9'; // MS Teams lighter
+      if (hex === '#000000') return '#ffffff'; // Notion white
     }
     return hex;
   };
@@ -127,32 +128,34 @@ export default function ConnectorModal({ connector, onClose, theme }) {
             </div>
 
             {/* Actions */}
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                <Activity size={16} style={{ color: 'var(--text-secondary)' }} />
-                <h4 style={{ margin: 0, fontSize: '0.85rem', fontWeight: '700', color: 'var(--text-secondary)', letterSpacing: '0.05em' }}>
-                  SUPPORTED ACTIONS
-                </h4>
+            {connector.actions && connector.actions.length > 0 && (
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                  <Activity size={16} style={{ color: 'var(--text-secondary)' }} />
+                  <h4 style={{ margin: 0, fontSize: '0.85rem', fontWeight: '700', color: 'var(--text-secondary)', letterSpacing: '0.05em' }}>
+                    SUPPORTED ACTIONS
+                  </h4>
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                  {connector.actions.map((item, i) => (
+                    <span 
+                      key={i} 
+                      style={{ 
+                        padding: '0.375rem 0.75rem', 
+                        borderRadius: '8px', 
+                        border: `1px solid ${bgOpacityColor}`,
+                        fontSize: '0.85rem', 
+                        background: bgOpacityColor, 
+                        color: adaptedColor,
+                        fontWeight: '600'
+                      }}
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
               </div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                {connector.actions?.map((item, i) => (
-                  <span 
-                    key={i} 
-                    style={{ 
-                      padding: '0.375rem 0.75rem', 
-                      borderRadius: '8px', 
-                      border: `1px solid ${bgOpacityColor}`,
-                      fontSize: '0.85rem', 
-                      background: bgOpacityColor, 
-                      color: adaptedColor,
-                      fontWeight: '600'
-                    }}
-                  >
-                    {item}
-                  </span>
-                ))}
-              </div>
-            </div>
+            )}
 
             {/* Security */}
             <div>
@@ -184,8 +187,10 @@ export default function ConnectorModal({ connector, onClose, theme }) {
           {/* Footer Action */}
           <div style={{ marginTop: 'auto', paddingTop: '1.5rem', borderTop: '1px solid var(--card-border)', display: 'flex', justifyContent: 'flex-start' }}>
             <a 
-              href="#" 
-              onClick={(e) => e.preventDefault()}
+              href={connector.docLink || '#'} 
+              target={connector.docLink ? '_blank' : undefined}
+              rel={connector.docLink ? 'noopener noreferrer' : undefined}
+              onClick={connector.docLink ? undefined : (e) => e.preventDefault()}
               style={{ 
                 display: 'flex', 
                 alignItems: 'center', 

@@ -19,121 +19,195 @@ import {
   Info
 } from 'lucide-react';
 
-const CONNECTOR_LIST = [
-  // Third Party
+// eslint-disable-next-line react-refresh/only-export-components
+export const CONNECTOR_LIST = [
+  // Third Party & Microsoft
   { 
     id: 'github', name: 'GitHub', icon: Github, color: '#24292e',
     syncs: ['Repositories', 'Issues & PRs', 'Wikis', 'Code Search'],
-    actions: ['Search Repos', 'Read Code', 'Create Issue', 'Merge PR'],
-    permissions: 'OAuth 2.0 / GitHub App'
+    actions: ['Add comment to a pending review', 'Add comment to an issue', 'Create branch', 'Update pull request', 'Merge pull request'],
+    permissions: 'OAuth 2.0 / GitHub App',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/github'
   },
   { 
     id: 'slack', name: 'Slack', icon: MessageSquare, color: '#4A154B',
     syncs: ['Channels', 'Messages', 'Threads', 'Files'],
-    actions: ['Send Message', 'Create Channel', 'Search History'],
-    permissions: 'OAuth 2.0 (Bot Token)'
+    actions: [],
+    permissions: 'OAuth 2.0 (Bot Token)',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/slack'
   },
   { 
     id: 'box', name: 'Box', icon: FolderOpen, color: '#0061d5',
     syncs: ['Files', 'Folders', 'Comments', 'Metadata'],
-    actions: ['Upload File', 'Share Link', 'Search Content'],
-    permissions: 'OAuth 2.0 (User Context)'
+    actions: ['Upload file', 'Download file', 'Copy file'],
+    permissions: 'OAuth 2.0 (User Context)',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/box'
   },
   { 
-    id: 'jira', name: 'Jira', icon: CheckSquare, color: '#0052cc',
+    id: 'jira-cloud', name: 'Jira Cloud', icon: CheckSquare, color: '#0052cc',
     syncs: ['Projects', 'Issues', 'Comments', 'Custom Fields'],
-    actions: ['Create Ticket', 'Update Status', 'Assign User'],
-    permissions: 'OAuth 2.0 / Basic Auth'
+    actions: ['Upload attachment', 'Change issue status', 'Create comment', 'Update comment', 'Create issue', 'Update issue'],
+    permissions: 'OAuth 2.0 / Basic Auth',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/jira-cloud'
   },
   { 
-    id: 'confluence', name: 'Confluence', icon: FileText, color: '#0052cc',
+    id: 'jira-dc', name: 'Jira Data Center', icon: CheckSquare, color: '#0052cc',
+    syncs: ['Projects', 'Issues', 'Comments'],
+    actions: ['Create issue', 'Update issue', 'Change Issue Status', 'Create comment', 'Update comment', 'Download attachment', 'Upload attachment'],
+    permissions: 'Basic Auth / OAuth 2.0',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/jira-dc'
+  },
+  { 
+    id: 'confluence-cloud', name: 'Confluence Cloud', icon: FileText, color: '#0052cc',
     syncs: ['Spaces', 'Pages', 'Blog Posts', 'Attachments'],
-    actions: ['Create Page', 'Update Content', 'Search Wiki'],
-    permissions: 'OAuth 2.0 / Basic Auth'
+    actions: ['Upload attachment', 'Download attachment', 'Create page'],
+    permissions: 'OAuth 2.0 / Basic Auth',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/confluence-cloud'
+  },
+  { 
+    id: 'confluence-dc', name: 'Confluence Data Center', icon: FileText, color: '#0052cc',
+    syncs: ['Spaces', 'Pages', 'Attachments'],
+    actions: ['Download attachment', 'Upload attachment'],
+    permissions: 'Basic Auth / OAuth 2.0',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/confluence-dc'
+  },
+  { 
+    id: 'dropbox', name: 'Dropbox', icon: FolderOpen, color: '#0061d5',
+    syncs: ['Files', 'Folders', 'Shared Links'],
+    actions: ['Download file', 'Upload file', 'Create folder', 'Copy file or folder'],
+    permissions: 'OAuth 2.0',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/dropbox'
+  },
+  { 
+    id: 'linear', name: 'Linear', icon: CheckSquare, color: '#5e6ad2',
+    syncs: ['Projects', 'Issues', 'Cycles'],
+    actions: ['Create comment', 'Create issue', 'Update issue', 'Create project', 'Update project'],
+    permissions: 'OAuth 2.0',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/linear'
   },
   { 
     id: 'monday', name: 'Monday.com', icon: Calendar, color: '#ff3d57',
     syncs: ['Boards', 'Items', 'Updates', 'Subitems'],
-    actions: ['Create Item', 'Change Status', 'Add Update'],
-    permissions: 'OAuth 2.0 (User Context)'
+    actions: ['Create workspace'],
+    permissions: 'OAuth 2.0 (User Context)',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/monday'
   },
   { 
     id: 'hubspot', name: 'HubSpot', icon: Users, color: '#ff7a59',
     syncs: ['Contacts', 'Companies', 'Tickets', 'Deals'],
-    actions: ['Create Contact', 'Update Deal', 'Log Activity'],
-    permissions: 'OAuth 2.0 (User Context)'
+    actions: [],
+    permissions: 'OAuth 2.0 (User Context)',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/hubspot'
   },
   { 
     id: 'shopify', name: 'Shopify', icon: ShoppingBag, color: '#96bf48',
     syncs: ['Products', 'Orders', 'Customers', 'Inventory'],
-    actions: ['Create Order', 'Update Inventory', 'Fetch Customer'],
-    permissions: 'OAuth 2.0 (Admin API)'
+    actions: ['Create customer', 'Update customer', 'Create order', 'Send Fulfillment Request'],
+    permissions: 'OAuth 2.0 (Admin API)',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/shopify'
+  },
+  { 
+    id: 'notion', name: 'Notion', icon: FileText, color: '#000000',
+    syncs: ['Pages', 'Databases', 'Blocks'],
+    actions: ['Create database', 'Update database', 'Create page', 'Update page', 'Create comment'],
+    permissions: 'OAuth 2.0',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/notion'
   },
   { 
     id: 'outlook', name: 'Outlook', icon: Mail, color: '#0078d4',
     syncs: ['Emails', 'Calendars', 'Contacts', 'Tasks'],
-    actions: ['Send Email', 'Schedule Event', 'Read Inbox'],
-    permissions: 'OAuth 2.0 (Microsoft Graph)'
+    actions: ['Download attachment', 'Create contact', 'Update contact', 'Create event', 'Update event', 'Send mail'],
+    permissions: 'OAuth 2.0 (Microsoft Graph)',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/ms-outlook'
   },
   { 
-    id: 'teams', name: 'MS Teams', icon: MessageSquare, color: '#555a99',
+    id: 'onedrive', name: 'Microsoft OneDrive', icon: FolderOpen, color: '#0078d4',
+    syncs: ['Files', 'Folders'],
+    actions: ['Upload file', 'Download file', 'Create folder', 'Copy file'],
+    permissions: 'OAuth 2.0 (Microsoft Graph)',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/ms-onedrive'
+  },
+  { 
+    id: 'sharepoint', name: 'Microsoft SharePoint', icon: FileText, color: '#0078d4',
+    syncs: ['Sites', 'Lists', 'Libraries'],
+    actions: ['Add page', 'Check out document', 'Check in document', 'Rename attachment or document', 'Move attachment or document', 'Upload document', 'Download document', 'Create folder', 'Add list'],
+    permissions: 'OAuth 2.0 (Microsoft Graph)',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/ms-sharepoint'
+  },
+  { 
+    id: 'teams', name: 'Microsoft Teams', icon: MessageSquare, color: '#555a99',
     syncs: ['Teams', 'Channels', 'Messages', 'Files'],
-    actions: ['Send Message', 'Create Meeting', 'List Members'],
-    permissions: 'OAuth 2.0 (Microsoft Graph)'
+    actions: ['Send channel message', 'Send chat message'],
+    permissions: 'OAuth 2.0 (Microsoft Graph)',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/ms-teams'
   },
   { 
     id: 'servicenow', name: 'ServiceNow', icon: Server, color: '#81b5a1',
     syncs: ['Incidents', 'Knowledge Base', 'Service Catalog'],
-    actions: ['Create Incident', 'Resolve Ticket', 'Search KB', 'Approve Request'],
-    permissions: 'OAuth 2.0 / Basic Auth'
+    actions: ['Create incident', 'Update incident'],
+    permissions: 'OAuth 2.0 / Basic Auth',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/servicenow'
+  },
+  { 
+    id: 'zendesk', name: 'Zendesk', icon: MessageCircle, color: '#03363d',
+    syncs: ['Tickets', 'Users', 'Articles'],
+    actions: ['Create ticket', 'Update ticket', 'Create category', 'Update post', 'Merge tickets', 'Update article'],
+    permissions: 'OAuth 2.0 / Token',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/zendesk'
   },
   
-  // Google First Party (Selected from Docs)
+  // Google First Party (Kept as read-only/grounding sources)
   { 
     id: 'drive', name: 'Google Drive', icon: FolderOpen, color: '#f4b400',
     syncs: ['Docs', 'Sheets', 'Slides', 'Drive Folders'],
-    actions: ['Create File', 'Share Document', 'Search Drive'],
-    permissions: 'OAuth 2.0 (Google Workspace)'
+    actions: ['Create Folder', 'Upload File', 'Download File'],
+    permissions: 'OAuth 2.0 (Google Workspace)',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/gdrive'
   },
   { 
     id: 'gmail', name: 'Gmail', icon: Mail, color: '#ea4335',
     syncs: ['Emails', 'Attachments', 'Labels', 'Threads'],
-    actions: ['Send Email', 'Read Thread', 'Draft Reply'],
-    permissions: 'OAuth 2.0 (Google Workspace)'
+    actions: ['Send message'],
+    permissions: 'OAuth 2.0 (Google Workspace)',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/gmail'
   },
   { 
     id: 'gcal', name: 'Google Calendar', icon: Calendar, color: '#4285f4',
     syncs: ['Events', 'Calendars', 'Attendees', 'Rooms'],
-    actions: ['Create Event', 'Update RSVP', 'Find Free Time'],
-    permissions: 'OAuth 2.0 (Google Workspace)'
+    actions: ['Create Calendar Event', 'Update Calendar Event'],
+    permissions: 'OAuth 2.0 (Google Workspace)',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/gcal'
   },
   { 
     id: 'gchat', name: 'Google Chat', icon: MessageCircle, color: '#00ac47',
     syncs: ['Spaces', 'Messages', 'Threads', 'Members'],
-    actions: ['Send Message', 'Read Thread', 'Create Space'],
-    permissions: 'OAuth 2.0 (Google Workspace)'
+    actions: ['Send message'],
+    permissions: 'OAuth 2.0 (Google Workspace)',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/gchat'
   },
   { 
     id: 'bigquery', name: 'BigQuery', icon: Database, color: '#669df6',
     syncs: ['Datasets', 'Tables', 'Views', 'Routines'],
-    actions: ['Run Query', 'Insert Rows', 'List Tables'],
-    permissions: 'OAuth 2.0 (Service Account / User)'
+    actions: [],
+    permissions: 'OAuth 2.0 (Service Account / User)',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/connect-bigquery'
   },
   { 
     id: 'gcs', name: 'Cloud Storage', icon: HardDrive, color: '#4285f4',
     syncs: ['Buckets', 'Objects', 'Metadata'],
-    actions: ['Upload File', 'Download File', 'List Objects'],
-    permissions: 'OAuth 2.0 (Service Account / User)'
+    actions: [],
+    permissions: 'OAuth 2.0 (Service Account / User)',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/connect-cloud-storage'
   },
   { 
     id: 'gsearch', name: 'Google Search', icon: Search, color: '#4285f4',
     syncs: ['Web Pages', 'Knowledge Graph'],
-    actions: ['Search Web', 'Get Snippets', 'Fact Check'],
+    actions: [],
     permissions: 'API Key / Search Engine ID'
   },
 ];
 
-export default function ConnectorSelector({ selectedConnectors, onToggle, theme }) {
+export default function ConnectorSelector({ selectedConnectors, onToggle, theme, connectors = CONNECTOR_LIST }) {
   const [infoConnector, setInfoConnector] = useState(null);
 
   const getIconColor = (item, isSelected) => {
@@ -153,7 +227,7 @@ export default function ConnectorSelector({ selectedConnectors, onToggle, theme 
       <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '2rem', opacity: 0.8 }}>Choose the enterprise data sources you want the Gemini agent to orchestrate.</p>
       
       <div className="connector-grid">
-        {CONNECTOR_LIST.map((item) => {
+        {connectors.map((item) => {
           const Icon = item.icon;
           const isSelected = selectedConnectors.includes(item.name);
           

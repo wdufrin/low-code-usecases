@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import ConnectorSelector from './components/ConnectorSelector';
 import ContextPanel from './components/ContextPanel';
 import AgentCard from './components/AgentCard';
-import { Sparkles, Loader2, Moon, Sun } from 'lucide-react';
+import { Sparkles, Loader2, Moon, Sun, Settings } from 'lucide-react';
+import { CONNECTOR_LIST } from './components/ConnectorSelector';
+import SettingsModal from './components/SettingsModal';
 
 export default function App() {
   const [selectedConnectors, setSelectedConnectors] = useState([]);
@@ -11,6 +13,11 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+  const [disabledConnectors, setDisabledConnectors] = useState(() => {
+    const saved = localStorage.getItem('disabledConnectors');
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   useEffect(() => {
     document.documentElement.className = theme;
@@ -120,6 +127,7 @@ export default function App() {
         selectedConnectors={selectedConnectors} 
         onToggle={handleToggleConnector} 
         theme={theme}
+        connectors={CONNECTOR_LIST.filter(c => !disabledConnectors.includes(c.id))}
       />
 
       {/* Context Panel */}
@@ -189,6 +197,44 @@ export default function App() {
           <p style={{ opacity: 0.7 }}>Select connectors and click generate to see architected results.</p>
         </div>
       )}
+      {/* Settings Modal */}
+      {isSettingsOpen && (
+        <SettingsModal 
+          disabledConnectors={disabledConnectors}
+          onSave={(newDisabled) => {
+            setDisabledConnectors(newDisabled);
+            localStorage.setItem('disabledConnectors', JSON.stringify(newDisabled));
+            setIsSettingsOpen(false);
+          }}
+          onClose={() => setIsSettingsOpen(false)}
+          theme={theme}
+        />
+      )}
+
+      {/* Floating Settings Button */}
+      <button 
+        onClick={() => setIsSettingsOpen(true)}
+        className="settings-toggle"
+        style={{
+          position: 'fixed',
+          bottom: '2rem',
+          left: '2rem',
+          background: 'var(--bg-glass)',
+          border: '1px solid var(--card-border)',
+          padding: '0.8rem',
+          borderRadius: '50%',
+          cursor: 'pointer',
+          color: 'var(--text-primary)',
+          boxShadow: 'var(--card-shadow)',
+          zIndex: 9999,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: 'all 0.2s ease'
+        }}
+      >
+        <Settings size={28} />
+      </button>
     </div>
   );
 }
