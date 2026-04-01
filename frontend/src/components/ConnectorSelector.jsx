@@ -207,7 +207,7 @@ export const CONNECTOR_LIST = [
   },
 ];
 
-export default function ConnectorSelector({ selectedConnectors, onToggle, theme, connectors = CONNECTOR_LIST }) {
+export default function ConnectorSelector({ selectedConnectors, onToggle, theme, connectors = CONNECTOR_LIST, disabledCapabilities, onToggleCapability }) {
   const [infoConnector, setInfoConnector] = useState(null);
 
   const getIconColor = (item, isSelected) => {
@@ -296,7 +296,10 @@ export default function ConnectorSelector({ selectedConnectors, onToggle, theme,
         connector={infoConnector} 
         onClose={() => setInfoConnector(null)} 
         theme={theme}
+        disabledCapabilities={disabledCapabilities}
+        onToggleCapability={onToggleCapability}
       />
+
     </div>
   );
 }

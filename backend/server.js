@@ -80,6 +80,145 @@ const agentSchema = {
   required: ['name', 'summary', 'connectors', 'model', 'instructions', 'data_stores', 'tools', 'difficulty']
 };
 
+const CONNECTOR_CAPABILITIES = {
+  'Box': {
+    actions: [
+      'Upload file: Uploads a new document or file to a specific folder in Box.',
+      'Download file: Downloads a file from Box.',
+      'Copy file: Creates a duplicate of a file within a destination folder while leaving the original file unchanged.'
+    ],
+    search: ['Files', 'Folders', 'Comments', 'Metadata']
+  },
+  'Confluence Cloud': {
+    actions: [
+      'Upload attachment: Uploads a file to be attached to a specific page.',
+      'Download attachment: Retrieves the actual file content of a specific attachment.',
+      'Create page: Creates a new Confluence Cloud page.'
+    ],
+    search: ['Spaces', 'Pages', 'Blog Posts', 'Attachments']
+  },
+  'Confluence Data Center': {
+    actions: [
+      'Download attachment: Download an attachment from a Confluence Data Center page.',
+      'Upload attachment: Uploads an attachment to a Confluence Data Center page.'
+    ],
+    search: ['Spaces', 'Pages', 'Attachments']
+  },
+  'Dropbox': {
+    actions: [
+      'Download file: Downloads a file from Dropbox.',
+      'Upload file: Uploads a new file to a specified path within a Dropbox account.',
+      'Create folder: Creates a folder in Dropbox.',
+      'Copy file or folder: Copies a file or folder in Dropbox.'
+    ],
+    search: ['Files', 'Folders', 'Shared Links']
+  },
+  'GitHub': {
+    actions: [
+      'Add comment to a pending review: Add comment to pending review in GitHub.',
+      'Add comment to an issue: Add comment to an issue in GitHub.',
+      'Create branch: Create a branch in GitHub.',
+      'Update pull request: Update a pull request in GitHub.',
+      'Merge pull request: Merge a pull request in GitHub.'
+    ],
+    search: ['Repositories', 'Issues & PRs', 'Wikis', 'Code Search']
+  },
+  'Jira Cloud': {
+    actions: [
+      'Upload attachment: Uploads an attachment to an existing issue in Jira Cloud.',
+      'Change issue status: Changes a Jira issue\'s status.',
+      'Create comment: Creates a comment on a Jira issue.',
+      'Update comment: Edits an existing comment.',
+      'Create issue: Creates a new Jira issue.',
+      'Update issue: Updates an existing issue.'
+    ],
+    search: ['Projects', 'Issues', 'Comments', 'Custom Fields']
+  },
+  'Linear': {
+    actions: [
+      'Create comment: Add a comment to a Linear issue.',
+      'Create issue: Create an issue in Linear.',
+      'Update issue: Update an issue in Linear.',
+      'Create project: Create a new Linear project.',
+      'Update project: Update information about a Linear project.'
+    ],
+    search: ['Projects', 'Issues', 'Cycles']
+  },
+  'Microsoft OneDrive': {
+    actions: [
+      'Upload file: Uploads a file to OneDrive.',
+      'Download file: Downloads a file from OneDrive.',
+      'Create folder: Creates a new folder in OneDrive.',
+      'Copy file: Copies a file in OneDrive.'
+    ],
+    search: ['Files', 'Folders']
+  },
+  'Outlook': {
+    actions: [
+      'Download attachment: Downloads an attachment from an email.',
+      'Create contact: Creates a new outlook contact.',
+      'Update contact: Updates an existing Outlook contact.',
+      'Create event: Creates a new event.',
+      'Update event: Updates an existing event.',
+      'Send mail: Sends an email.'
+    ],
+    search: ['Emails', 'Calendars', 'Contacts', 'Tasks']
+  },
+  'Microsoft SharePoint': {
+    actions: [
+      'Add page: Creates a new page on the SharePoint site.',
+      'Check out document: Check out a document from a SharePoint library.',
+      'Check in document: Check a document into a SharePoint library.',
+      'Rename attachment or document: Rename an attachment or a document in a SharePoint library.',
+      'Move attachment or document: Move a document from a SharePoint library to a destination library, folder, or another SharePoint site.',
+      'Upload document: Uploads a file to a SharePoint list list.',
+      'Download document: Downloads a file attached to a SharePoint list.',
+      'Create folder: Creates a new folder.',
+      'Add list: Creates a new structured data list.'
+    ],
+    search: ['Sites', 'Lists', 'Libraries']
+  },
+  'Microsoft Teams': {
+    actions: [
+      'Send channel message: Sends a message to a specified channel.',
+      'Send chat message: Sends a message in a chat.'
+    ],
+    search: ['Teams', 'Channels', 'Messages', 'Files']
+  },
+  'Gmail': {
+    actions: [
+      'Send message: Sends an email message to a specified recipient.'
+    ],
+    search: ['Emails', 'Attachments', 'Labels', 'Threads']
+  },
+  'Google Drive': {
+    actions: [
+      'Create Folder: Creates a new folder in Google Drive.',
+      'Upload File: Uploads a file to Google Drive.',
+      'Download File: Downloads a file from Google Drive.'
+    ],
+    search: ['Docs', 'Sheets', 'Slides', 'Drive Folders']
+  },
+  'ServiceNow': {
+    actions: [
+      'Create incident: Creates a new ServiceNow incident.',
+      'Update incident: Updates an existing ServiceNow incident.'
+    ],
+    search: ['Incidents', 'Knowledge Base', 'Service Catalog']
+  },
+  'Zendesk': {
+    actions: [
+      'Create ticket: Creates a new ticket in Zendesk.',
+      'Update ticket: Updates an existing ticket in Zendesk.',
+      'Create category: Creates a new category in Zendesk.',
+      'Update post: Updates a post in Zendesk.',
+      'Merge tickets: Merges multiple tickets in Zendesk.',
+      'Update article: Updates an existing article in Zendesk.'
+    ],
+    search: ['Tickets', 'Users', 'Articles']
+  }
+};
+
 const responseSchema = {
   type: 'array',
   items: agentSchema,
@@ -87,7 +226,11 @@ const responseSchema = {
 };
 
 app.post('/api/generate', async (req, res) => {
-  const { connectors, context } = req.body;
+  const { connectors, context, disabledCapabilities = {} } = req.body;
+
+  console.log('\n--- API GENERATE REQUEST ---');
+  console.log('Connectors:', connectors);
+  console.log('Disabled Capabilities:', JSON.stringify(disabledCapabilities, null, 2));
 
   if (!connectors || !Array.isArray(connectors) || connectors.length === 0) {
     return res.status(400).json({ error: 'Connectors are required' });
@@ -105,6 +248,42 @@ app.post('/api/generate', async (req, res) => {
       `;
     }
 
+    // Dynamically build the whitelist based on enabled capabilities
+    let actionsWhitelistPrompt = '';
+    let searchCapabilitiesPrompt = '';
+
+    for (const connector of connectors) {
+      const cap = CONNECTOR_CAPABILITIES[connector];
+      const disabled = disabledCapabilities[connector] || [];
+
+      if (cap) {
+        if (cap.actions) {
+          const enabledActions = cap.actions.filter(act => {
+            const actName = act.split(':')[0].trim();
+            return !disabled.includes(actName);
+          });
+
+          if (enabledActions.length > 0) {
+            actionsWhitelistPrompt += `\n**${connector}**\n`;
+            enabledActions.forEach(act => actionsWhitelistPrompt += `- ${act}\n`);
+          }
+        }
+
+        if (cap.search) {
+          if (Array.isArray(cap.search)) {
+            const enabledSearch = cap.search.filter(ent => !disabled.includes(ent));
+            if (enabledSearch.length > 0) {
+              searchCapabilitiesPrompt += `- **${connector}**: ${enabledSearch.join(', ')}\n`;
+            }
+          } else {
+            if (!disabled.includes('Search Features')) {
+              searchCapabilitiesPrompt += `- **${connector}**: ${cap.search}\n`;
+            }
+          }
+        }
+      }
+    }
+
     const prompt = `
       You are an expert Enterprise AI solutions architect designing for Gemini Enterprise.
       Generate 5 or 6 low-code agent blueprints that capitalize on the selected tool connectors: ${connectors.join(', ')}.
@@ -112,142 +291,15 @@ app.post('/api/generate', async (req, res) => {
       ${contextPrompt}
       
       **SUPPORTED CONNECTOR ACTIONS WHITELIST**:
-      Propose agent actions **ONLY** from the exact supported capabilities listed below for each connector. If an action for a connector is not listed here, you CANNOT propose it (it must be grounding/read-only if no mutations list exists).
+      Propose agent actions **ONLY** from the exact supported capabilities listed below for each connector. If an action for a connector is not listed here (or was disabled by user), you CANNOT propose it (it must be read-only/grounding if no mutations list exists). If a connector is not listed here at all, treat it as read-only.
       
-      **Box**
-      - Upload file: Uploads a new document or file to a specific folder in Box.
-      - Download file: Downloads a file from Box.
-      - Copy file: Creates a duplicate of a file within a destination folder while leaving the original file unchanged.
-      
-      **Confluence Cloud**
-      - Upload attachment: Uploads a file to be attached to a specific page.
-      - Download attachment: Retrieves the actual file content of a specific attachment.
-      - Create page: Creates a new Confluence Cloud page.
-      
-      **Confluence Data Center**
-      - Download attachment: Download an attachment from a Confluence Data Center page.
-      - Upload attachment: Uploads an attachment to a Confluence Data Center page.
-      
-      **Dropbox**
-      - Download file: Downloads a file from Dropbox.
-      - Upload file: Uploads a new file to a specified path within a Dropbox account.
-      - Create folder: Creates a folder in Dropbox.
-      - Copy file or folder: Copies a file or folder in Dropbox.
-      
-      **GitHub**
-      - Add comment to a pending review: Add comment to pending review in GitHub.
-      - Add comment to an issue: Add comment to an issue in GitHub.
-      - Create branch: Create a branch in GitHub.
-      - Update pull request: Update a pull request in GitHub.
-      - Merge pull request: Merge a pull request in GitHub.
-      
-      **Jira Cloud**
-      - Upload attachment: Uploads an attachment to an existing issue in Jira Cloud.
-      - Change issue status: Changes a Jira issue's status.
-      - Create comment: Creates a comment on a Jira issue.
-      - Update comment: Edits an existing comment.
-      - Create issue: Creates a new Jira issue (requires summary, project ID, and issue type ID).
-      - Update issue: Updates an existing issue in Jira Cloud. You need to provide the issue ID to identify it, and you can modify various fields such as the summary, description, and assignee.
-      
-      **Jira Data Center**
-      - Create issue: Create a new issue or ticket.
-      - Update issue: Change the details of a ticket, like updating its summary, description, priority, or assignee.
-      - Change Issue Status: Change the status of an issue.
-      - Create comment: Add a comment on an issue.
-      - Update comment: Modify an existing comment on an issue.
-      - Download attachment: Download an attachment from an issue.
-      - Upload attachment: Add an attachment to an issue.
-      
-      **Linear**
-      - Create comment: Add a comment to a Linear issue.
-      - Create issue: Create an issue in Linear.
-      - Update issue: Update an issue in Linear.
-      - Create project: Create a new Linear project.
-      - Update project: Update information about a Linear project.
-      
-      **Microsoft OneDrive**
-      - Upload file: Uploads a file to OneDrive.
-      - Download file: Downloads a file from OneDrive.
-      - Create folder: Creates a new folder in OneDrive at a specified path.
-      - Copy file: Copies a file in OneDrive from a source to a destination.
-      
-      **Microsoft Outlook**
-      - Download attachment: Downloads an attachment from an email.
-      - Create contact: Creates a new outlook contact.
-      - Update contact: Updates an existing Outlook contact.
-      - Create event: Creates a new event.
-      - Update event: Updates an existing event.
-      - Send mail: Sends an email, including attachments.
-      
-      **Microsoft SharePoint**
-      - Add page: Creates a new page on the SharePoint site.
-      - Check out document: Check out a document from a SharePoint library.
-      - Check in document: Check a document into a SharePoint library.
-      - Rename attachment or document: Rename an attachment or a document in a SharePoint library.
-      - Move attachment or document: Move a document from a SharePoint library to a destination library, folder, or another SharePoint site.
-      - Upload document: Uploads a file to a SharePoint list item.
-      - Download document: Downloads a file attached to a SharePoint list item.
-      - Create folder: Creates a new folder in a specified path.
-      - Add list: Creates a new structured data list (for example, tasks, contacts) on SharePoint.
-      
-      **Microsoft Teams**
-      - Send channel message: Sends a message to a specified channel.
-      - Send chat message: Sends a message in a chat.
-      
-      **Monday**
-      - Create workspace: Create a new workspace in Monday.
-      
-      **Notion**
-      - Create database: Creates a new database in Notion.
-      - Update database: Updates the attributes of a database in Notion.
-      - Create page: Creates a new page in Notion.
-      - Update page: Updates attributes of a Notion page.
-      - Create comment: Creates a new comment on a Notion page or block.
-      
-      **ServiceNow**
-      - Create incident: Creates a new ServiceNow incident to report and track service interruptions.
-      - Update incident: Updates an existing ServiceNow incident using its system ID.
-      
-      **Shopify**
-      - Create customer: Create a new customer in Shopify.
-      - Update customer: Update an existing customer in Shopify.
-      - Create order: Create a new order in Shopify.
-      - Send Fulfillment Request: Sends a request to fulfill products to a fulfillment service for an order.
-      
-      **Zendesk**
-      - Create ticket: Creates a new ticket in Zendesk.
-      - Update ticket: Updates an existing ticket in Zendesk.
-      - Create category: Creates a new category in Zendesk.
-      - Update post: Updates a post in Zendesk.
-      - Merge tickets: Merges multiple tickets in Zendesk.
-      - Update article: Updates an existing article in Zendesk.
-      
-      **Google Drive**
-      - Create Folder: Creates a new folder in Google Drive.
-      - Upload File: Uploads a file to Google Drive.
-      - Download File: Downloads a file from Google Drive.
-      
-      **Gmail**
-      - Send message: Sends an email message to a specified recipient.
-      
-      **Google Calendar**
-      - Create Calendar Event: Creates an event in your calendar.
-      - Update Calendar Event: Updates the metadata for an event in your primary calendar.
-      
-      **Google Chat**
-      - Send message: Sends a message to a specified Google Chat space or conversation.
+      ${actionsWhitelistPrompt}
       
       **SUPPORTED SEARCH/GROUNDING ENTITIES (Capabilities)**:
       When designing agents, assume the following connectors can **ONLY** search for the listed entities. If a connector is not listed here (or has no entities), treat it as standard web search/unstructured text search only (e.g., website or GCS):
-      - **Google Drive**: Files (PDF, Docs, Sheets, Slides, etc.), Folders, Workspace Shared Drives.
-      - **Gmail**: Email Messages, Threads.
-      - **Google Calendar**: Events, Meeting details.
-      - **Slack**: Conversations, Files, Messages.
-      - **GitHub**: Repositories, Issues, Pull Requests, Files, Commits, Branches, Releases.
-      - **Jira Cloud**: Issues, Comments, Worklogs, Attachments.
-      - **Confluence Cloud**: Content (Pages, Blogposts), Spaces.
-      - **Salesforce**: Leads, Opportunities, Contacts, Accounts, Cases, Contracts, Campaigns.
-      - **ServiceNow**: Tasks, Incidents, Knowledge Articles.
+      
+      ${searchCapabilitiesPrompt}
+
 
       **CRITICAL ARCHITECTURE CONSTRAINTS**: 
       1. **Execution model**: You MUST generate exactly 1 or 2 agents that are **On-Demand only** (meaning they OMIT the schedule property object entirely). The rest should be scheduled. If an agent is on-demand, you are forbidden from generating a "schedule" block for it!

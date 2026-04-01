@@ -3,7 +3,7 @@ import { X, ExternalLink, Activity, Database, Shield } from 'lucide-react';
 
 import { createPortal } from 'react-dom';
 
-export default function ConnectorModal({ connector, onClose, theme }) {
+export default function ConnectorModal({ connector, onClose, theme, disabledCapabilities = {}, onToggleCapability }) {
   if (!connector) return null;
 
   const Icon = connector.icon;
@@ -108,22 +108,30 @@ export default function ConnectorModal({ connector, onClose, theme }) {
                 </h4>
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                {connector.syncs?.map((item, i) => (
-                  <span 
-                    key={i} 
-                    style={{ 
-                      padding: '0.375rem 0.75rem', 
-                      borderRadius: '8px', 
-                      border: '1px solid var(--card-border)',
-                      fontSize: '0.85rem', 
-                      background: 'var(--bg-secondary)', 
-                      color: 'var(--text-primary)',
-                      fontWeight: '500'
-                    }}
-                  >
-                    {item}
-                  </span>
-                ))}
+                {connector.syncs?.map((item, i) => {
+                  const isDisabled = disabledCapabilities[connector.name]?.includes(item);
+                  return (
+                    <button 
+                      key={i} 
+                      onClick={() => onToggleCapability(connector.name, item)}
+                      style={{ 
+                        padding: '0.375rem 0.75rem', 
+                        borderRadius: '8px', 
+                        border: `1px solid ${isDisabled ? 'rgba(255,255,255,0.05)' : 'var(--card-border)'}`,
+                        fontSize: '0.85rem', 
+                        background: isDisabled ? 'rgba(255,255,255,0.02)' : 'var(--bg-secondary)', 
+                        color: isDisabled ? 'var(--text-secondary)' : 'var(--text-primary)',
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        opacity: isDisabled ? 0.5 : 1,
+                        textDecoration: isDisabled ? 'line-through' : 'none',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      {item}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -137,22 +145,30 @@ export default function ConnectorModal({ connector, onClose, theme }) {
                   </h4>
                 </div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                  {connector.actions.map((item, i) => (
-                    <span 
-                      key={i} 
-                      style={{ 
-                        padding: '0.375rem 0.75rem', 
-                        borderRadius: '8px', 
-                        border: `1px solid ${bgOpacityColor}`,
-                        fontSize: '0.85rem', 
-                        background: bgOpacityColor, 
-                        color: adaptedColor,
-                        fontWeight: '600'
-                      }}
-                    >
-                      {item}
-                    </span>
-                  ))}
+                  {connector.actions.map((item, i) => {
+                    const isDisabled = disabledCapabilities[connector.name]?.includes(item);
+                    return (
+                      <button 
+                        key={i} 
+                        onClick={() => onToggleCapability(connector.name, item)}
+                        style={{ 
+                          padding: '0.375rem 0.75rem', 
+                          borderRadius: '8px', 
+                          border: `1px solid ${isDisabled ? 'rgba(255,255,255,0.05)' : bgOpacityColor}`,
+                          fontSize: '0.85rem', 
+                          background: isDisabled ? 'rgba(255,255,255,0.02)' : bgOpacityColor, 
+                          color: isDisabled ? 'var(--text-secondary)' : adaptedColor,
+                          fontWeight: '600',
+                          cursor: 'pointer',
+                          opacity: isDisabled ? 0.5 : 1,
+                          textDecoration: isDisabled ? 'line-through' : 'none',
+                          transition: 'all 0.2s'
+                        }}
+                      >
+                        {item}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}

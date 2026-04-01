@@ -3,13 +3,14 @@ import { createPortal } from 'react-dom';
 import { X, HelpCircle, Sparkles, Zap, ShieldCheck } from 'lucide-react';
 
 export default function HelpModal({ onClose }) {
-  const [activeSection, setActiveSection] = useState('1');
+  const [activeSection, setActiveSection] = useState('connectors');
 
   const videoMapping = {
-    '1': '/walkthrough_connectors.webp',
-    '2': '/walkthrough_context.webp',
-    '3': '/walkthrough_generate.webp',
-    '4': '/walkthrough_cards.webp',
+    'connectors': '/walkthrough_connectors.webp',
+    'filter': '/walkthrough_filter.webp',
+    'context': '/walkthrough_context.webp',
+    'generate': '/walkthrough_generate.webp',
+    'cards': '/walkthrough_cards.webp',
     'lc': '/walkthrough_lowcode.webp'
   };
 
@@ -116,10 +117,11 @@ export default function HelpModal({ onClose }) {
           {/* Instructions Column */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             {[
-              { id: '1', num: '1.', title: 'Select Connectors', desc: 'Choose the enterprise data sources you want the Gemini agent to orchestrate.' },
-              { id: '2', num: '2.', title: 'Describe Context (Optional)', desc: 'Provide details about your role, industry, or specific problems you want to solve.' },
-              { id: '3', num: '3.', title: 'Architect Blueprints', desc: 'Click \'Generate Agent Use Cases\' to see stunning blueprints ready for development.' },
-              { id: '4', num: '4.', title: 'Flip and Review Starter Prompts', desc: 'Flip card to review technical specifications and copy the cohesive starter prompt.' }
+              { id: 'connectors', num: '1.', title: 'Select Connectors', desc: 'Choose the enterprise data sources you want the Gemini agent to orchestrate.' },
+              { id: 'filter', num: '2.', title: 'Filter Capabilities (Optional)', desc: 'Click the Info icon on a connector to disable specific actions or sync features.' },
+              { id: 'context', num: '3.', title: 'Describe Your Context (Optional)', desc: 'Provide details about your role, industry, or specific problems you want to solve.' },
+              { id: 'generate', num: '4.', title: 'Architect Blueprints', desc: 'Click \'Generate Agent Use Cases\' to see stunning blueprints ready for development.' },
+              { id: 'cards', num: '5.', title: 'Flip and Review Starter Prompts', desc: 'Flip card to review technical specifications and copy the cohesive starter prompt.' }
             ].map(sec => (
               <div 
                 key={sec.id}
@@ -138,7 +140,7 @@ export default function HelpModal({ onClose }) {
                   transition: 'all 0.2s'
                 }}
               >
-                <div style={{ fontWeight: '800', fontSize: '1.25rem', color: sec.id === '1' ? '#6366f1' : sec.id === '2' ? '#a855f7' : sec.id === '3' ? '#ec4899' : '#10b981' }}>{sec.num}</div>
+                <div style={{ fontWeight: '800', fontSize: '1.25rem', color: sec.id === 'connectors' ? '#6366f1' : sec.id === 'filter' ? '#a855f7' : sec.id === 'context' ? '#ec4899' : sec.id === 'generate' ? '#f59e0b' : '#10b981' }}>{sec.num}</div>
                 <div>
                   <h4 style={{ fontWeight: '700', color: 'var(--text-primary)', marginBottom: '0.25rem', marginTop: 0 }}>{sec.title}</h4>
                   <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: '1.5' }}>{sec.desc}</p>

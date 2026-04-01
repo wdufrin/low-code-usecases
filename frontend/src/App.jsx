@@ -21,6 +21,17 @@ export default function App() {
   });
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [disabledCapabilities, setDisabledCapabilities] = useState({});
+
+  const handleToggleCapability = (connectorId, capability) => {
+    setDisabledCapabilities(prev => {
+      const current = prev[connectorId] || [];
+      const updated = current.includes(capability)
+        ? current.filter(item => item !== capability)
+        : [...current, capability];
+      return { ...prev, [connectorId]: updated };
+    });
+  };
 
   useEffect(() => {
     document.documentElement.className = theme;
@@ -55,9 +66,11 @@ export default function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           connectors: selectedConnectors,
-          context: userContext 
+          context: userContext,
+          disabledCapabilities
         }),
       });
+
 
       if (!response.ok) {
         throw new Error('Failed to generate agents. Please check if the backend is running.');
@@ -151,7 +164,10 @@ export default function App() {
         onToggle={handleToggleConnector} 
         theme={theme}
         connectors={CONNECTOR_LIST.filter(c => !disabledConnectors.includes(c.id))}
+        disabledCapabilities={disabledCapabilities}
+        onToggleCapability={handleToggleCapability}
       />
+
 
       {/* Context Panel */}
       <ContextPanel 
