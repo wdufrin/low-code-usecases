@@ -51,7 +51,7 @@ const agentSchema = {
     },
     instructions: { 
         type: 'string', 
-        description: 'Operational instructions framed AS A DIRECT PROMPT for an AI Agent Builder Assistant (e.g. "Configure an agent that...", "Ground with X..."). tell the assistant exactly how to set up this agent.' 
+        description: 'A single, cohesive starter prompt for an Agent Builder Workspace (e.g., "Create an agent that automates X by searching Y..."). It should frame the objective as a command that a user can copy-paste to get started, describing the workflow and grounding sources.' 
     },
     data_stores: {
         type: 'array',
@@ -69,8 +69,9 @@ const agentSchema = {
           trigger: { type: 'string', description: 'The recurring time trigger (e.g., "Daily at 9:00 AM", "Every Monday").' },
           prompt: { type: 'string', description: 'The prompt or task executed when this trigger fires.' }
         },
-        description: 'Automated recurring execution setup.'
+        description: 'Automated recurring execution setup. OMIT THIS PROPERTY ENTIRELY if the agent is on-demand (not scheduled).'
     },
+
     difficulty: { 
         type: 'string', 
         description: 'Implementation difficulty: Easy, Medium, or Hard.' 
@@ -236,28 +237,58 @@ app.post('/api/generate', async (req, res) => {
       **Google Chat**
       - Send message: Sends a message to a specified Google Chat space or conversation.
       
+      **SUPPORTED SEARCH/GROUNDING ENTITIES (Capabilities)**:
+      When designing agents, assume the following connectors can **ONLY** search for the listed entities. If a connector is not listed here (or has no entities), treat it as standard web search/unstructured text search only (e.g., website or GCS):
+      - **Google Drive**: Files (PDF, Docs, Sheets, Slides, etc.), Folders, Workspace Shared Drives.
+      - **Gmail**: Email Messages, Threads.
+      - **Google Calendar**: Events, Meeting details.
+      - **Slack**: Conversations, Files, Messages.
+      - **GitHub**: Repositories, Issues, Pull Requests, Files, Commits, Branches, Releases.
+      - **Jira Cloud**: Issues, Comments, Worklogs, Attachments.
+      - **Confluence Cloud**: Content (Pages, Blogposts), Spaces.
+      - **Salesforce**: Leads, Opportunities, Contacts, Accounts, Cases, Contracts, Campaigns.
+      - **ServiceNow**: Tasks, Incidents, Knowledge Articles.
+
       **CRITICAL ARCHITECTURE CONSTRAINTS**: 
-      1. **Execution model**: Low-code agents can be EITHER **automated recurring schedules** (e.g., Daily Leads breakdown) OR **on-demand tools** triggered manually by a user to automate a discrete workflow efficiently. They CANNOT continuous background-monitor (e.g. do not say "Watch inbox"). If an agent is purely on-demand for manual execution, **OMIT the schedule property object entirely**.
+      1. **Execution model**: You MUST generate exactly 1 or 2 agents that are **On-Demand only** (meaning they OMIT the schedule property object entirely). The rest should be scheduled. If an agent is on-demand, you are forbidden from generating a "schedule" block for it!
+
+
       2. **Action strictly alignment limitations**:
          * **STRICT WHITELIST ADHERENCE**: You MUST restrict proposed actions only to items explicitly listed above in the **SUPPORTED CONNECTOR ACTIONS WHITELIST**. If an action is not inside that list, you are forbidden to propose it. Treat other selectors strictly as Read-Only grounding sources contour safely correctly transparently responsibly overlay.
-      3. **Instructions Format**: Write the \`instructions\` field explicitly written AS A PROMPT FOR AN AI AGENT BUILDER ASSISTANT to execute. Frame it as a configuration directive (e.g., "Create an agent that automates X...", "Configure this agent with the following step-by-step instructions: 1. Ground with Z...") making it directly copyable into a builder wizard safely cleanly transparently overlay trigger setup framing responsively appropriately.
-      4. **Strict Selector Integrity**: You are STRICTLY FORBIDDEN from proposing actions, data stores, or operational workflows for ANY connector that is not explicitly present in the selected connectors list: [${connectors.join(', ')}]. DO NOT mix up similar tools (e.g., DO NOT propose Outlook actions if Gmail was selected). If a selected connector is missing from the whitelist index above, treat it as a Read-Only Grounding Search datasource.
+      3. **Instructions Format**: Write the \`instructions\` field as a **single, cohesive starter prompt** for an Agent Builder (e.g., "Create an agent that automates X by searching Y and saving Z. It should follow these steps..."). Start with "Create an agent that..." or "Help me analyze...". Do NOT use numbered lists (1, 2, 3) for instructions - use paragraphs. It should be directly copy-pasteable by the user as a prompt to get started!
 
-      Generate blueprints framing accurate constraints conforming supported blueprints segmenting System Instructions, Grounding specs, Action endpoint triggers list transparent fully accurate framing schedule triggers separately correctly responsibly framing safely.
+      4. **Strict Selector Integrity**: You are STRICTLY FORBIDDEN from proposing actions, data stores, or operational workflows for ANY connector that is not explicitly present in the selected connectors list: [${connectors.join(', ')}]. DO NOT mix up similar tools (e.g., DO NOT propose Outlook actions if Gmail was selected).
+
+      5. **Search/Grounding Alignment**: For the connectors you propose, check the **SUPPORTED SEARCH/GROUNDING ENTITIES** section. If a connector is not listed there (e.g., Notion, Shopify, etc.), consider it **UNSUPPORTED for native search** (it should not be used as a grounding datasource unless custom ingestion like BigQuery/GCS is specified in the context).
+
+
+
+      Generate 5-6 structured agent blueprint ideas that adhere strictly to the whitelists and constraints above. Ensure exactly 1 or 2 are on-demand (omit the "schedule" property entirely). The "instructions" field MUST be a single, cohesive starter prompt for a user to get started (e.g., "Create an agent that..."). Do NOT use numbered lists for instructions.
+
     `;
 
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash', // Using standard flash for speed and structured output
+      model: 'gemini-2.5-pro', // Using pro for better complex instruction compliance
+
       contents: prompt,
       config: {
         responseMimeType: 'application/json',
         responseSchema: responseSchema,
-        temperature: 0.7,
+        temperature: 0.2,
+
       }
     });
 
     const text = response.text;
-    res.json(JSON.parse(text));
+    const agents = JSON.parse(text);
+    
+    // Failsafe: Programmatically ensure exactly 1-2 agents are on-demand by deleting their schedule
+    if (agents.length > 0) delete agents[0].schedule;
+    if (agents.length > 1) {
+      delete agents[1].schedule; // Make the first two on-demand
+    }
+    
+    res.json(agents);
 
   } catch (error) {
     console.error('Error generating agents:', error);

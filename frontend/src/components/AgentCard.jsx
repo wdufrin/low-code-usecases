@@ -107,7 +107,8 @@ export default function AgentCard({ agent }) {
             </div>
             
             <div className="mb-5">
-              <div style={{ fontSize: '0.65rem', fontWeight: '700', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>INSTRUCTIONS</div>
+              <div style={{ fontSize: '0.65rem', fontWeight: '700', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>STARTER PROMPT</div>
+
               <div style={{ background: 'var(--bg-primary)', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--card-border)', position: 'relative' }}>
                 <button 
                   onClick={(e) => {
