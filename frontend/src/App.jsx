@@ -5,6 +5,8 @@ import AgentCard from './components/AgentCard';
 import { Sparkles, Loader2, Moon, Sun, Settings } from 'lucide-react';
 import { CONNECTOR_LIST } from './components/ConnectorSelector';
 import SettingsModal from './components/SettingsModal';
+import HelpModal from './components/HelpModal';
+import { HelpCircle } from 'lucide-react';
 
 export default function App() {
   const [selectedConnectors, setSelectedConnectors] = useState([]);
@@ -18,6 +20,7 @@ export default function App() {
     return saved ? JSON.parse(saved) : [];
   });
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
 
   useEffect(() => {
     document.documentElement.className = theme;
@@ -73,7 +76,27 @@ export default function App() {
     <div className="container">
       {/* Header */}
       <header className="header" style={{ paddingTop: '1rem', position: 'relative' }}>
-        <div style={{ position: 'absolute', top: '1rem', right: '0' }}>
+        <div style={{ position: 'absolute', top: '1rem', right: '0', display: 'flex', gap: '0.75rem' }}>
+          <button 
+            onClick={() => setIsHelpOpen(true)}
+            id="help-button"
+            className="theme-toggle"
+
+            style={{
+              background: 'var(--bg-glass)',
+              border: '1px solid var(--card-border)',
+              padding: '0.6rem',
+              borderRadius: '12px',
+              cursor: 'pointer',
+              color: 'var(--text-primary)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <HelpCircle size={20} />
+          </button>
+          
           <button 
             onClick={toggleTheme}
             className="theme-toggle"
@@ -209,6 +232,10 @@ export default function App() {
           onClose={() => setIsSettingsOpen(false)}
           theme={theme}
         />
+      )}
+
+      {isHelpOpen && (
+        <HelpModal onClose={() => setIsHelpOpen(false)} />
       )}
 
       {/* Floating Settings Button */}

@@ -4,6 +4,8 @@ import { Brain, Zap, AlertCircle, Clock, Copy, Check } from 'lucide-react';
 export default function AgentCard({ agent }) {
   const [isFlipped, setIsFlipped] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [scheduleCopied, setScheduleCopied] = useState(false);
+  const [onDemandCopied, setOnDemandCopied] = useState(false);
 
   const diffColor = (diff) => {
     const colors = {
@@ -90,16 +92,72 @@ export default function AgentCard({ agent }) {
                   <div style={{ fontSize: '0.7rem', fontWeight: '800', color: '#f59e0b', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                     <span>⏰</span> {agent.schedule.trigger}
                   </div>
-                  <p style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', fontStyle: 'italic', background: 'var(--bg-secondary)', padding: '0.5rem', borderRadius: '6px', border: '1px solid var(--card-border)' }}>
-                    "{agent.schedule.prompt}"
-                  </p>
+                  <div style={{ position: 'relative', marginTop: '0.5rem' }}>
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent card flipping
+                        navigator.clipboard.writeText(agent.schedule.prompt);
+                        setScheduleCopied(true);
+                        setTimeout(() => setScheduleCopied(false), 2000);
+                      }}
+                      style={{
+                        position: 'absolute',
+                        top: '0.3rem',
+                        right: '0.3rem',
+                        border: 'none',
+                        background: 'transparent',
+                        cursor: 'pointer',
+                        color: 'var(--text-secondary)',
+                        padding: '0.2rem',
+                        borderRadius: '4px',
+                        transition: 'all 0.2s',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                      title="Copy schedule prompt"
+                      className="hover:bg-[rgba(255,255,255,0.05)]"
+                    >
+                      {scheduleCopied ? <Check size={12} style={{ color: '#10b981' }} /> : <Copy size={12} />}
+                    </button>
+                    <p style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', fontStyle: 'italic', background: 'var(--bg-secondary)', padding: '0.5rem', paddingRight: '1.8rem', borderRadius: '6px', border: '1px solid var(--card-border)', margin: 0 }}>
+                      "{agent.schedule.prompt}"
+                    </p>
+                  </div>
                 </div>
               ) : (
-                <div style={{ background: 'rgba(99, 102, 241, 0.05)', padding: '0.75rem', borderRadius: '12px', border: '1px solid rgba(99, 102, 241, 0.2)' }}>
+                <div style={{ background: 'rgba(99, 102, 241, 0.05)', padding: '0.75rem', borderRadius: '12px', border: '1px solid rgba(99, 102, 241, 0.2)', position: 'relative' }}>
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent card flipping
+                      navigator.clipboard.writeText("Triggered manually by users on-demand to automate discrete workflows accurately.");
+                      setOnDemandCopied(true);
+                      setTimeout(() => setOnDemandCopied(false), 2000);
+                    }}
+                    style={{
+                      position: 'absolute',
+                      top: '0.3rem',
+                      right: '0.3rem',
+                      border: 'none',
+                      background: 'transparent',
+                      cursor: 'pointer',
+                      color: 'var(--text-secondary)',
+                      padding: '0.2rem',
+                      borderRadius: '4px',
+                      transition: 'all 0.2s',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                    title="Copy on-demand description"
+                    className="hover:bg-[rgba(255,255,255,0.05)]"
+                  >
+                    {onDemandCopied ? <Check size={12} style={{ color: '#10b981' }} /> : <Copy size={12} />}
+                  </button>
                   <div style={{ fontSize: '0.7rem', fontWeight: '800', color: '#6366f1', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                     <span>🖱️</span> On-Demand Assistant
                   </div>
-                  <p style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', fontStyle: 'italic' }}>
+                  <p style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', fontStyle: 'italic', paddingRight: '1.5rem' }}>
                     Triggered manually by users on-demand to automate discrete workflows accurately.
                   </p>
                 </div>
