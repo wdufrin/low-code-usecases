@@ -151,18 +151,15 @@ export default function HelpModal({ onClose }) {
 
             {/* Low-Code Ready */}
             <div 
-              onClick={() => setActiveSection('lc')}
               style={{ 
                 marginTop: 'auto',
                 padding: '1rem', 
                 borderRadius: '16px', 
-                background: activeSection === 'lc' ? 'rgba(99, 102, 241, 0.1)' : 'rgba(99, 102, 241, 0.05)',
-                border: `1px solid ${activeSection === 'lc' ? 'rgba(99, 102, 241, 0.5)' : 'rgba(99, 102, 241, 0.2)'}`,
+                background: 'rgba(99, 102, 241, 0.05)',
+                border: '1px solid rgba(99, 102, 241, 0.2)',
                 display: 'flex',
                 gap: '0.75rem',
-                alignItems: 'flex-start',
-                cursor: 'pointer',
-                transition: 'all 0.2s'
+                alignItems: 'flex-start'
               }}
             >
               <Sparkles size={18} style={{ color: '#6366f1', marginTop: '0.2rem' }} />
@@ -196,8 +193,6 @@ export default function HelpModal({ onClose }) {
                   objectFit: 'cover' 
                 }} 
               />
-
-
             </div>
             <div style={{ textAlign: 'center' }}>
               <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontStyle: 'italic' }}>
