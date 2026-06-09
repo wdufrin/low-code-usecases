@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import ConnectorSelector from './components/ConnectorSelector';
 import ContextPanel from './components/ContextPanel';
 import AgentCard from './components/AgentCard';
@@ -23,7 +23,7 @@ export default function App() {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [disabledCapabilities, setDisabledCapabilities] = useState({});
 
-  const handleToggleCapability = (connectorId, capability) => {
+  const handleToggleCapability = useCallback((connectorId, capability) => {
     setDisabledCapabilities(prev => {
       const current = prev[connectorId] || [];
       const updated = current.includes(capability)
@@ -31,7 +31,7 @@ export default function App() {
         : [...current, capability];
       return { ...prev, [connectorId]: updated };
     });
-  };
+  }, []);
 
   useEffect(() => {
     document.documentElement.className = theme;
@@ -42,13 +42,17 @@ export default function App() {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
   };
 
-  const handleToggleConnector = (connectorName) => {
+  const handleToggleConnector = useCallback((connectorName) => {
     setSelectedConnectors(prev => 
       prev.includes(connectorName)
         ? prev.filter(c => c !== connectorName)
         : [...prev, connectorName]
     );
-  };
+  }, []);
+
+  const filteredConnectors = useMemo(() => {
+    return CONNECTOR_LIST.filter(c => !disabledConnectors.includes(c.id));
+  }, [disabledConnectors]);
 
   const generateAgents = async () => {
     if (selectedConnectors.length === 0) {
@@ -163,7 +167,7 @@ export default function App() {
         selectedConnectors={selectedConnectors} 
         onToggle={handleToggleConnector} 
         theme={theme}
-        connectors={CONNECTOR_LIST.filter(c => !disabledConnectors.includes(c.id))}
+        connectors={filteredConnectors}
         disabledCapabilities={disabledCapabilities}
         onToggleCapability={handleToggleCapability}
       />
