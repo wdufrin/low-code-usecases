@@ -81,7 +81,7 @@ export default function AgentCard({ agent }) {
                 borderRadius: '10px', 
                 border: '1px solid var(--card-border)' 
               }}>
-                {agent.model || 'Gemini 2.5 Pro'}
+                {agent.model || 'Gemini 3.5 Flash'}
               </div>
             </div>
 

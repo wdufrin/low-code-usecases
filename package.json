@@ -1,13 +1,19 @@
 {
   "name": "low-code-usecases",
   "version": "1.0.0",
-  "description": "",
+  "description": "Agent Architect monorepo",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "install-all": "npm install && npm install --prefix backend && npm install --prefix frontend",
+    "dev-backend": "npm start --prefix backend",
+    "dev-frontend": "npm run dev --prefix frontend",
+    "dev": "npx concurrently \"npm run dev-backend\" \"npm run dev-frontend\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs"
+  "type": "commonjs",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
 }

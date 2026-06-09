@@ -15,6 +15,6 @@ COPY . .
 ENV NODE_ENV=production
 
 # Cloud Run sets PORT env variable automatically
-EXPOSE 3001
+EXPOSE 3002
 
 CMD [ "node", "server.js" ]

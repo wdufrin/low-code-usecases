@@ -8,18 +8,17 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const port = process.env.PORT || 3001; // Support Cloud Run port
+const port = process.env.PORT || 3002; // Support Cloud Run port or align with local dev proxy
 
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Initialize Gemini Client with Vertex AI
-// Using the project approved by the user
 const ai = new GoogleGenAI({
   vertexai: true,
-  project: 'ancient-sandbox-322523',
-  location: 'us-central1', // Standard regional endpoint
+  project: process.env.GCP_PROJECT || process.env.GOOGLE_CLOUD_PROJECT || 'ancient-sandbox-322523',
+  location: process.env.GCP_LOCATION || 'us-central1', // Standard regional endpoint
 });
 
 // Define the schema for the structured output
@@ -44,7 +43,7 @@ const agentSchema = {
       enum: [
         'Gemini 2.5 Pro', 
         'Gemini 2.5 Flash', 
-        'Gemini 3 Flash (Preview)', 
+        'Gemini 3.5 Flash', 
         'Gemini 3.1 Pro (Preview)'
       ],
       description: 'The recommended model name.' 
@@ -320,7 +319,7 @@ app.post('/api/generate', async (req, res) => {
     `;
 
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-pro', // Using pro for better complex instruction compliance
+      model: 'gemini-3.5-flash', // Using latest flash model
 
       contents: prompt,
       config: {
