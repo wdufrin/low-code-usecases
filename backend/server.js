@@ -575,7 +575,7 @@ app.post('/api/generate', async (req, res) => {
     `;
 
     const response = await ai.models.generateContent({
-      model: 'gemini-3.5-flash', // Using latest flash model
+      model: 'gemini-1.5-flash', // Using latest GA flash model
 
       contents: prompt,
       config: {
