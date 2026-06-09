@@ -16,8 +16,15 @@ import {
   MessageCircle,
   Search,
   Server,
-  Info
+  Info,
+  Activity,
+  CreditCard,
+  HelpCircle,
+  BookOpen,
+  Briefcase,
+  Cloud
 } from 'lucide-react';
+
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const CONNECTOR_LIST = [
@@ -25,14 +32,14 @@ export const CONNECTOR_LIST = [
   { 
     id: 'github', name: 'GitHub', icon: Github, color: '#24292e',
     syncs: ['Repositories', 'Issues & PRs', 'Wikis', 'Code Search'],
-    actions: ['Add comment to a pending review', 'Add comment to an issue', 'Create branch', 'Update pull request', 'Merge pull request'],
+    actions: ['Create or update file', 'Create or update issue', 'Fork repository', 'Push files', 'Add comment to a pending review', 'Add comment to an issue', 'Create branch', 'Update pull request', 'Merge pull request'],
     permissions: 'OAuth 2.0 / GitHub App',
     docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/github'
   },
   { 
     id: 'slack', name: 'Slack', icon: MessageSquare, color: '#4A154B',
     syncs: ['Channels', 'Messages', 'Threads', 'Files'],
-    actions: [],
+    actions: ['Send Slack message', 'Schedule Slack message', 'Create Slack canvas', 'Send Slack message draft'],
     permissions: 'OAuth 2.0 (Bot Token)',
     docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/slack'
   },
@@ -81,28 +88,28 @@ export const CONNECTOR_LIST = [
   { 
     id: 'linear', name: 'Linear', icon: CheckSquare, color: '#5e6ad2',
     syncs: ['Projects', 'Issues', 'Cycles'],
-    actions: ['Create comment', 'Create issue', 'Update issue', 'Create project', 'Update project'],
+    actions: ['Save comment', 'Save issue', 'Save a project'],
     permissions: 'OAuth 2.0',
     docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/linear'
   },
   { 
     id: 'monday', name: 'Monday.com', icon: Calendar, color: '#ff3d57',
     syncs: ['Boards', 'Items', 'Updates', 'Subitems'],
-    actions: ['Create workspace'],
+    actions: ['Change item column values', 'Create board', 'Create column', 'Create dashboard', 'Create doc', 'Create form', 'Create group', 'Create item', 'Create workspace'],
     permissions: 'OAuth 2.0 (User Context)',
     docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/monday'
   },
   { 
     id: 'hubspot', name: 'HubSpot', icon: Users, color: '#ff7a59',
     syncs: ['Contacts', 'Companies', 'Tickets', 'Deals'],
-    actions: [],
+    actions: ['Manage CRM Objects'],
     permissions: 'OAuth 2.0 (User Context)',
     docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/hubspot'
   },
   { 
     id: 'shopify', name: 'Shopify', icon: ShoppingBag, color: '#96bf48',
     syncs: ['Products', 'Orders', 'Customers', 'Inventory'],
-    actions: ['Create customer', 'Update customer', 'Create order', 'Send Fulfillment Request'],
+    actions: ['Create order', 'Send fulfillment request', 'Create customer', 'Update customer'],
     permissions: 'OAuth 2.0 (Admin API)',
     docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/shopify'
   },
@@ -151,23 +158,226 @@ export const CONNECTOR_LIST = [
   { 
     id: 'zendesk', name: 'Zendesk', icon: MessageCircle, color: '#03363d',
     syncs: ['Tickets', 'Users', 'Articles'],
-    actions: ['Create ticket', 'Update ticket', 'Create category', 'Update post', 'Merge tickets', 'Update article'],
+    actions: ['Update article', 'Update ticket', 'Create category', 'Update post', 'Merge tickets', 'Create ticket'],
     permissions: 'OAuth 2.0 / Token',
     docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/zendesk'
   },
-  
-  // Google First Party (Kept as read-only/grounding sources)
+  { 
+    id: 'entra-id', name: 'Microsoft Entra ID', icon: Users, color: '#0078d4',
+    syncs: ['Users', 'Groups', 'Devices', 'Applications'],
+    actions: [],
+    permissions: 'OAuth 2.0 (Microsoft Graph)',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/entra-id/connect-entra-id'
+  },
+  { 
+    id: 'asana', name: 'Asana', icon: CheckSquare, color: '#fc636b',
+    syncs: ['Projects', 'Tasks', 'Sections', 'Workspaces'],
+    actions: ['Create project', 'Create project status update', 'Create tasks', 'Update tasks', 'Delete task'],
+    permissions: 'OAuth 2.0',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/asana'
+  },
+  { 
+    id: 'pagerduty', name: 'PagerDuty', icon: Activity, color: '#06ac38',
+    syncs: ['Incidents', 'Services', 'Users', 'Schedules', 'Log Entries'],
+    actions: ['Create incident', 'Update incident', 'Add note to incident', 'Create service', 'Update service', 'Create user', 'Update user', 'Create on-call override', 'Search', 'List on-call entries', 'List log entries'],
+    permissions: 'OAuth 2.0 / Token',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/pagerduty'
+  },
+  { 
+    id: 'wrike', name: 'Wrike', icon: FileText, color: '#04a85b',
+    syncs: ['Folders', 'Projects', 'Tasks', 'Spaces'],
+    actions: ['Create folder/project'],
+    permissions: 'OAuth 2.0',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/wrike'
+  },
+  { 
+    id: 'zohobooks', name: 'Zoho Books', icon: CreditCard, color: '#e2231a',
+    syncs: ['Contacts', 'Invoices', 'Estimates', 'Items', 'Purchase Orders', 'Sales Orders'],
+    actions: ['Create Contact', 'Create Customer Payment', 'Create Estimate', 'Create Invoice', 'Create Item', 'Create Purchase Order', 'Create Sales Order', 'Create Tax', 'Update Contact', 'Update Estimate', 'Update Invoice', 'Update Item', 'Update Purchase Order', 'Update Sales Order'],
+    permissions: 'OAuth 2.0',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/zohobooks'
+  },
+  { 
+    id: 'zohodesk', name: 'Zoho Desk', icon: HelpCircle, color: '#2277bb',
+    syncs: ['Tickets', 'Events', 'Tasks', 'Comments', 'Contacts'],
+    actions: ['Create Event', 'Create Task', 'Create Ticket', 'Create Ticket Comment', 'Mark Ticket As Read', 'Update Ticket'],
+    permissions: 'OAuth 2.0',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/zohodesk'
+  },
+  { 
+    id: 'zohoprojects', name: 'Zoho Projects', icon: Briefcase, color: '#f39200',
+    syncs: ['Projects', 'Tasks', 'Milestones', 'Task Lists', 'Issues', 'Phases'],
+    actions: ['Create project', 'Create task', 'Create task list', 'Update issue', 'Update phase', 'Update task', 'Update task list'],
+    permissions: 'OAuth 2.0',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/zohoprojects'
+  },
+  {
+    id: 'apollo-graphos', name: 'Apollo GraphOS', icon: Database, color: '#e535ab',
+    syncs: ['Graphs', 'Schemas', 'Metrics'],
+    actions: [],
+    permissions: 'API Key / OAuth 2.0',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/apollo-graphos'
+  },
+  {
+    id: 'blockscout', name: 'Blockscout', icon: Database, color: '#3c3c3d',
+    syncs: ['Blocks', 'Transactions', 'Contracts'],
+    actions: [],
+    permissions: 'API Key',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/blockscout'
+  },
+  {
+    id: 'dice', name: 'Dice', icon: Search, color: '#1a5ba8',
+    syncs: ['Jobs', 'Profiles', 'Applications'],
+    actions: [],
+    permissions: 'OAuth 2.0',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/dice'
+  },
+  {
+    id: 'clinicaltrials', name: 'Clinical Trials', icon: Activity, color: '#007bbf',
+    syncs: ['Studies', 'Protocols', 'Results'],
+    actions: [],
+    permissions: 'API Key',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/clinicaltrials'
+  },
+  {
+    id: 'crossbeam', name: 'Crossbeam', icon: Users, color: '#ff5a5f',
+    syncs: ['Partners', 'Overlaps', 'Accounts'],
+    actions: [],
+    permissions: 'OAuth 2.0',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/crossbeam'
+  },
+  {
+    id: 'crypto', name: 'Crypto', icon: CreditCard, color: '#f7931a',
+    syncs: ['Tokens', 'Markets', 'Wallets'],
+    actions: [],
+    permissions: 'API Key',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/crypto'
+  },
+  {
+    id: 'docusign', name: 'DocuSign', icon: FileText, color: '#ffb500',
+    syncs: ['Envelopes', 'Templates', 'Documents'],
+    actions: [],
+    permissions: 'OAuth 2.0',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/docusign'
+  },
+  {
+    id: 'excalidraw', name: 'Excalidraw', icon: FileText, color: '#6965db',
+    syncs: ['Drawings', 'Libraries', 'Scenes'],
+    actions: [],
+    permissions: 'OAuth 2.0',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/excalidraw'
+  },
+  {
+    id: 'granted', name: 'Granted', icon: Server, color: '#2563eb',
+    syncs: ['Permissions', 'Roles', 'Access Logs'],
+    actions: [],
+    permissions: 'OAuth 2.0',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/granted'
+  },
+  {
+    id: 'godaddy', name: 'GoDaddy', icon: Server, color: '#00a650',
+    syncs: ['Domains', 'Certificates', 'DNS Records'],
+    actions: [],
+    permissions: 'API Key',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/godaddy'
+  },
+  {
+    id: 'huggingface', name: 'Hugging Face', icon: Database, color: '#ffd21e',
+    syncs: ['Models', 'Datasets', 'Spaces'],
+    actions: [],
+    permissions: 'API Key / Token',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/huggingface'
+  },
+  {
+    id: 'invideo', name: 'Invideo', icon: FileText, color: '#0052cc',
+    syncs: ['Videos', 'Templates', 'Projects'],
+    actions: [],
+    permissions: 'OAuth 2.0',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/invideo'
+  },
+  {
+    id: 'kiwi', name: 'Kiwi', icon: Calendar, color: '#00a699',
+    syncs: ['Flights', 'Bookings', 'Destinations'],
+    actions: [],
+    permissions: 'API Key',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/kiwi'
+  },
+  {
+    id: 'lastminute', name: 'LastMinute', icon: Calendar, color: '#ff4f00',
+    syncs: ['Hotels', 'Flights', 'Packages'],
+    actions: [],
+    permissions: 'API Key',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/lastminute'
+  },
+  {
+    id: 'mermaid_chart', name: 'Mermaid Chart', icon: FileText, color: '#ff3366',
+    syncs: ['Diagrams', 'Documents', 'Teams'],
+    actions: [],
+    permissions: 'OAuth 2.0',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/mermaid_chart'
+  },
+  {
+    id: 'midpage', name: 'Midpage', icon: FileText, color: '#6200ee',
+    syncs: ['Legal Docs', 'Cases', 'Briefs'],
+    actions: [],
+    permissions: 'OAuth 2.0',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/midpage'
+  },
+  {
+    id: 'microsoft-learn', name: 'Microsoft Learn', icon: BookOpen, color: '#00a4ef',
+    syncs: ['Modules', 'Paths', 'Certifications'],
+    actions: [],
+    permissions: 'Public Access / API',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/microsoft-learn'
+  },
+  {
+    id: 'open_targets', name: 'Open Targets', icon: Activity, color: '#3f51b5',
+    syncs: ['Targets', 'Diseases', 'Drugs'],
+    actions: [],
+    permissions: 'Public Access / API',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/open_targets'
+  },
+  {
+    id: 'pandadoc', name: 'PandaDoc', icon: FileText, color: '#00d084',
+    syncs: ['Documents', 'Templates', 'Forms'],
+    actions: [],
+    permissions: 'OAuth 2.0',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/pandadoc'
+  },
+  {
+    id: 'smartsheet', name: 'Smartsheet', icon: FileText, color: '#24a148',
+    syncs: ['Sheets', 'Reports', 'Dashboards', 'Workspaces'],
+    actions: [],
+    permissions: 'OAuth 2.0',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/smartsheet'
+  },
+  {
+    id: 'trivago', name: 'Trivago', icon: Search, color: '#007faf',
+    syncs: ['Hotels', 'Deals', 'Reviews'],
+    actions: [],
+    permissions: 'API Key',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/trivago'
+  },
+  {
+    id: 'salesforce', name: 'Salesforce', icon: Cloud, color: '#00a1e0',
+    syncs: ['Accounts', 'Contacts', 'Opportunities', 'Leads', 'Cases'],
+    actions: [],
+    permissions: 'OAuth 2.0 (User Context / Ingestion)',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/salesforce/connect-salesforce'
+  },
+
+  // Google First Party (Kept as read-only/grounding sources unless actions exist)
   { 
     id: 'drive', name: 'Google Drive', icon: FolderOpen, color: '#f4b400',
     syncs: ['Docs', 'Sheets', 'Slides', 'Drive Folders'],
-    actions: ['Create Folder', 'Upload File', 'Download File'],
+    actions: ['Create folder', 'Copy file or folder', 'Download file', 'Upload file'],
     permissions: 'OAuth 2.0 (Google Workspace)',
     docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/gdrive'
   },
   { 
     id: 'gmail', name: 'Gmail', icon: Mail, color: '#ea4335',
     syncs: ['Emails', 'Attachments', 'Labels', 'Threads'],
-    actions: ['Send message'],
+    actions: ['Create label', 'Add label to message', 'Send message', 'Download attachment', 'Send message with attachments'],
     permissions: 'OAuth 2.0 (Google Workspace)',
     docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/gmail'
   },
@@ -181,7 +391,7 @@ export const CONNECTOR_LIST = [
   { 
     id: 'gchat', name: 'Google Chat', icon: MessageCircle, color: '#00ac47',
     syncs: ['Spaces', 'Messages', 'Threads', 'Members'],
-    actions: ['Send message'],
+    actions: ['Create space', 'Reply to thread'],
     permissions: 'OAuth 2.0 (Google Workspace)',
     docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/gchat'
   },
@@ -205,6 +415,55 @@ export const CONNECTOR_LIST = [
     actions: [],
     permissions: 'API Key / Search Engine ID'
   },
+  {
+    id: 'groups', name: 'Google Groups', icon: Users, color: '#1a73e8',
+    syncs: ['Groups', 'Members', 'Conversations'],
+    actions: [],
+    permissions: 'OAuth 2.0 (Google Workspace)',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/connect-groups'
+  },
+  {
+    id: 'notebooklm', name: 'NotebookLM', icon: BookOpen, color: '#0f9d58',
+    syncs: ['Notebooks', 'Notes', 'Sources'],
+    actions: [],
+    permissions: 'OAuth 2.0 (Google Workspace)',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/connect-notebooklm'
+  },
+  {
+    id: 'cloudsql', name: 'Cloud SQL', icon: Database, color: '#4285f4',
+    syncs: ['Databases', 'Tables', 'Schemas'],
+    actions: [],
+    permissions: 'OAuth 2.0 (Service Account / User)',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/connect-cloud-sql'
+  },
+  {
+    id: 'spanner', name: 'Spanner', icon: Database, color: '#4285f4',
+    syncs: ['Databases', 'Tables', 'Schemas'],
+    actions: [],
+    permissions: 'OAuth 2.0 (Service Account / User)',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/connect-spanner'
+  },
+  {
+    id: 'firestore', name: 'Firestore', icon: Database, color: '#ffca28',
+    syncs: ['Collections', 'Documents'],
+    actions: [],
+    permissions: 'OAuth 2.0 (Service Account / User)',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/connect-firestore'
+  },
+  {
+    id: 'bigtable', name: 'Bigtable', icon: Database, color: '#4285f4',
+    syncs: ['Instances', 'Tables', 'Rows'],
+    actions: [],
+    permissions: 'OAuth 2.0 (Service Account / User)',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/connect-bigtable'
+  },
+  {
+    id: 'alloydb', name: 'AlloyDB', icon: Database, color: '#4285f4',
+    syncs: ['Databases', 'Tables', 'Schemas'],
+    actions: [],
+    permissions: 'OAuth 2.0 (Service Account / User)',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/connect-alloydb'
+  }
 ];
 
 export default function ConnectorSelector({ selectedConnectors, onToggle, theme, connectors = CONNECTOR_LIST, disabledCapabilities, onToggleCapability }) {
@@ -221,75 +480,127 @@ export default function ConnectorSelector({ selectedConnectors, onToggle, theme,
     return item.color;
   };
 
+  const google1PIds = [
+    'drive', 'gmail', 'gcal', 'gchat', 'bigquery', 'gcs', 'gsearch', 
+    'groups', 'notebooklm', 'cloudsql', 'spanner', 'firestore', 'bigtable', 'alloydb'
+  ];
+
+  const firstPartyConnectors = connectors.filter(c => google1PIds.includes(c.id));
+  const thirdPartyConnectors = connectors.filter(c => !google1PIds.includes(c.id));
+
+  const renderConnectorButton = (item) => {
+    const Icon = item.icon;
+    const isSelected = selectedConnectors.includes(item.name);
+    
+    return (
+      <button
+        key={item.id}
+        onClick={() => onToggle(item.name)}
+        className={`relative flex flex-col items-center justify-center p-5 rounded-2xl transition-all duration-200 border
+          ${isSelected 
+            ? 'shadow-md' 
+            : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'
+          }
+        `}
+        style={isSelected ? {
+          position: 'relative',
+          backgroundColor: `${item.color}22`, 
+          borderColor: item.color,
+          borderWidth: '2px',
+          transform: 'scale(1.02)'
+        } : {
+          position: 'relative',
+          backgroundColor: 'var(--bg-secondary)',
+          borderColor: 'var(--card-border)'
+        }}
+      >
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+            setInfoConnector(item);
+          }}
+          className="opacity-60 hover:opacity-100 transition-opacity duration-200"
+          style={{ 
+            color: getIconColor(item, isSelected),
+            position: 'absolute',
+            top: '6px',
+            right: '10px'
+          }}
+        >
+          <Info size={16} />
+        </div>
+        <div 
+          className={`p-2 rounded-xl mb-3 transition-all duration-200 ${isSelected ? 'scale-110' : ''}`}
+          style={isSelected ? { background: `${item.color}33` } : {}}
+        >
+          <Icon 
+            size={24} 
+            style={{ 
+              color: getIconColor(item, isSelected),
+              strokeWidth: isSelected ? 2.5 : 2
+            }} 
+          />
+        </div>
+        <span style={{ 
+          fontSize: '0.75rem', 
+          fontWeight: isSelected ? '700' : '500',
+          color: isSelected ? 'var(--text-primary)' : 'var(--text-secondary)'
+        }}>
+          {item.name}
+        </span>
+      </button>
+    );
+  };
+
   return (
     <div className="glass p-8 mb-12">
       <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '0.5rem', color: 'var(--text-primary)' }}>1. Select Connectors</h2>
       <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '2rem', opacity: 0.8 }}>Choose the enterprise data sources you want the Gemini agent to orchestrate.</p>
       
-      <div className="connector-grid">
-        {connectors.map((item) => {
-          const Icon = item.icon;
-          const isSelected = selectedConnectors.includes(item.name);
-          
-          return (
-            <button
-              key={item.id}
-              onClick={() => onToggle(item.name)}
-              className={`relative flex flex-col items-center justify-center p-5 rounded-2xl transition-all duration-200 border
-                ${isSelected 
-                  ? 'shadow-md' 
-                  : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'
-                }
-              `}
-              style={isSelected ? {
-                position: 'relative',
-                backgroundColor: `${item.color}22`, 
-                borderColor: item.color,
-                borderWidth: '2px',
-                transform: 'scale(1.02)'
-              } : {
-                position: 'relative',
-                backgroundColor: 'var(--bg-secondary)',
-                borderColor: 'var(--card-border)'
-              }}
-            >
-              <div
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setInfoConnector(item);
-                }}
-                className="opacity-60 hover:opacity-100 transition-opacity duration-200"
-                style={{ 
-                  color: getIconColor(item, isSelected),
-                  position: 'absolute',
-                  top: '6px',
-                  right: '10px'
-                }}
-              >
-                <Info size={16} />
-              </div>
-              <div 
-                className={`p-2 rounded-xl mb-3 transition-all duration-200 ${isSelected ? 'scale-110' : ''}`}
-                style={isSelected ? { background: `${item.color}33` } : {}}
-              >
-                <Icon 
-                  size={24} 
-                  style={{ 
-                    color: getIconColor(item, isSelected),
-                    strokeWidth: isSelected ? 2.5 : 2
-                  }} 
-                />
-              </div>
-              <span style={{ 
-                fontSize: '0.75rem', 
-                fontWeight: isSelected ? '700' : '500',
-                color: isSelected ? 'var(--text-primary)' : 'var(--text-secondary)'
-              }}>
-                {item.name}
-              </span>
-            </button>
-          );
-        })}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+        {firstPartyConnectors.length > 0 && (
+          <div>
+            <h3 style={{ 
+              fontSize: '0.8rem', 
+              fontWeight: '800', 
+              color: 'var(--text-secondary)', 
+              letterSpacing: '0.08em', 
+              marginBottom: '1.5rem', 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '0.5rem',
+              opacity: 0.8
+            }}>
+              <span>GOOGLE 1P CONNECTORS</span>
+              <span style={{ fontSize: '0.7rem', padding: '0.1rem 0.4rem', background: 'var(--accent-glow)', color: '#6366f1', borderRadius: '6px' }}>{firstPartyConnectors.length}</span>
+            </h3>
+            <div className="connector-grid">
+              {firstPartyConnectors.map(renderConnectorButton)}
+            </div>
+          </div>
+        )}
+        
+        {thirdPartyConnectors.length > 0 && (
+          <div>
+            <h3 style={{ 
+              fontSize: '0.8rem', 
+              fontWeight: '800', 
+              color: 'var(--text-secondary)', 
+              letterSpacing: '0.08em', 
+              marginBottom: '1.5rem', 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '0.5rem',
+              opacity: 0.8
+            }}>
+              <span>THIRD PARTY & MICROSOFT CONNECTORS</span>
+              <span style={{ fontSize: '0.7rem', padding: '0.1rem 0.4rem', background: 'var(--accent-glow)', color: '#6366f1', borderRadius: '6px' }}>{thirdPartyConnectors.length}</span>
+            </h3>
+            <div className="connector-grid">
+              {thirdPartyConnectors.map(renderConnectorButton)}
+            </div>
+          </div>
+        )}
       </div>
       
       <ConnectorModal 

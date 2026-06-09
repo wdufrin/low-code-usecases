@@ -114,6 +114,10 @@ const CONNECTOR_CAPABILITIES = {
   },
   'GitHub': {
     actions: [
+      'Create or update file: Creates or updates a file in GitHub.',
+      'Create or update issue: Creates or updates an issue in GitHub.',
+      'Fork repository: Forkes a repository in GitHub.',
+      'Push files: Pushes files to GitHub.',
       'Add comment to a pending review: Add comment to pending review in GitHub.',
       'Add comment to an issue: Add comment to an issue in GitHub.',
       'Create branch: Create a branch in GitHub.',
@@ -133,13 +137,23 @@ const CONNECTOR_CAPABILITIES = {
     ],
     search: ['Projects', 'Issues', 'Comments', 'Custom Fields']
   },
+  'Jira Data Center': {
+    actions: [
+      'Create issue: Creates a new issue or ticket.',
+      'Update issue: Updates an existing issue in Jira Data Center.',
+      'Change Issue Status: Changes the status of an issue.',
+      'Create comment: Adds a comment on an issue.',
+      'Update comment: Modifies an existing comment on an issue.',
+      'Download attachment: Downloads an attachment from an issue.',
+      'Upload attachment: Adds an attachment to an issue.'
+    ],
+    search: ['Projects', 'Issues', 'Comments']
+  },
   'Linear': {
     actions: [
-      'Create comment: Add a comment to a Linear issue.',
-      'Create issue: Create an issue in Linear.',
-      'Update issue: Update an issue in Linear.',
-      'Create project: Create a new Linear project.',
-      'Update project: Update information about a Linear project.'
+      'Save comment: Saves a comment to a Linear issue.',
+      'Save issue: Saves an issue in Linear.',
+      'Save a project: Saves a new Linear project.'
     ],
     search: ['Projects', 'Issues', 'Cycles']
   },
@@ -155,7 +169,7 @@ const CONNECTOR_CAPABILITIES = {
   'Outlook': {
     actions: [
       'Download attachment: Downloads an attachment from an email.',
-      'Create contact: Creates a new outlook contact.',
+      'Create contact: Creates a new Outlook contact.',
       'Update contact: Updates an existing Outlook contact.',
       'Create event: Creates a new event.',
       'Update event: Updates an existing event.',
@@ -186,15 +200,20 @@ const CONNECTOR_CAPABILITIES = {
   },
   'Gmail': {
     actions: [
-      'Send message: Sends an email message to a specified recipient.'
+      'Create label: Creates a new label in Gmail.',
+      'Add label to message: Add one or more existing labels to an email message or draft.',
+      'Send message: Sends an email message to the recipients.',
+      'Download attachment: Downloads an attachment from a Gmail message.',
+      'Send message with attachments: Sends an email message with attachments to the recipients.'
     ],
     search: ['Emails', 'Attachments', 'Labels', 'Threads']
   },
   'Google Drive': {
     actions: [
-      'Create Folder: Creates a new folder in Google Drive.',
-      'Upload File: Uploads a file to Google Drive.',
-      'Download File: Downloads a file from Google Drive.'
+      'Create folder: Creates a new folder in Google Drive.',
+      'Copy file or folder: Copies a file or folder within Google Drive.',
+      'Download file: Downloads a file from Google Drive.',
+      'Upload file: Uploads a file to Google Drive.'
     ],
     search: ['Docs', 'Sheets', 'Slides', 'Drive Folders']
   },
@@ -215,6 +234,243 @@ const CONNECTOR_CAPABILITIES = {
       'Update article: Updates an existing article in Zendesk.'
     ],
     search: ['Tickets', 'Users', 'Articles']
+  },
+  'Slack': {
+    actions: [
+      'Send Slack message: Send a Slack message.',
+      'Schedule Slack message: Schedule a Slack message.',
+      'Create Slack canvas: Create a Slack canvas.',
+      'Send Slack message draft: Send a Slack message draft.'
+    ],
+    search: ['Channels', 'Messages', 'Threads', 'Files']
+  },
+  'Monday.com': {
+    actions: [
+      'Change item column values: Changes the column values of an item in Monday.',
+      'Create board: Creates a new board in Monday.',
+      'Create column: Creates a new column in Monday.',
+      'Create dashboard: Creates a new dashboard in Monday.',
+      'Create doc: Creates a new doc in Monday.',
+      'Create form: Creates a new form in Monday.',
+      'Create group: Creates a new group in Monday.',
+      'Create item: Creates a new item in Monday.',
+      'Create workspace: Creates a new workspace in Monday.'
+    ],
+    search: ['Boards', 'Items', 'Updates', 'Subitems']
+  },
+  'HubSpot': {
+    actions: [
+      'Manage CRM Objects: Manages CRM objects in HubSpot.'
+    ],
+    search: ['Contacts', 'Companies', 'Tickets', 'Deals']
+  },
+  'Asana': {
+    actions: [
+      'Create project: Create a new project with optional sections and tasks in a single operation.',
+      'Create project status update: Post a status update to a project or portfolio.',
+      'Create tasks: Create one or more tasks immediately without visual preview or asking for confirmation.',
+      'Update tasks: Update one or more tasks in a single operation.',
+      'Delete task: Delete task from Asana.'
+    ],
+    search: ['Projects', 'Tasks', 'Sections', 'Workspaces']
+  },
+  'PagerDuty': {
+    actions: [
+      'Create incident: Create an incident synchronously without a corresponding event from a monitoring service.',
+      'Update incident: Acknowledge, resolve, escalate, or reassign an incident.',
+      'Add note to incident: Add a note to an incident\'s timeline.',
+      'Create service: Create a new service.',
+      'Update service: Update an existing service.',
+      'Create user: Create a new user account in PagerDuty.',
+      'Update user: Update an existing user\'s details.',
+      'Create on-call override: Create an override for a specific user covering a specified time range on a schedule.',
+      'Search: Search for incidents, services, users, schedules, and escalation policies.',
+      'List on-call entries: List the on-call entries during a given time range.',
+      'List log entries: Get the full timeline of an incident.'
+    ],
+    search: ['Incidents', 'Services', 'Users', 'Schedules', 'Log Entries']
+  },
+  'Wrike': {
+    actions: [
+      'Create folder/project: Create a new folder/project in Wrike.'
+    ],
+    search: ['Folders', 'Projects', 'Tasks', 'Spaces']
+  },
+  'Zoho Books': {
+    actions: [
+      'Create Contact: Create a new contact in Zoho Books.',
+      'Create Customer Payment: Create a new customer payment in Zoho Books.',
+      'Create Estimate: Create a new estimate in Zoho Books.',
+      'Create Invoice: Create a new invoice in Zoho Books.',
+      'Create Item: Create a new item in Zoho Books.',
+      'Create Purchase Order: Create a new purchase order in Zoho Books.',
+      'Create Sales Order: Create a new sales order in Zoho Books.',
+      'Create Tax: Create a new tax in Zoho Books.',
+      'Update Contact: Update an existing contact in Zoho Books.',
+      'Update Estimate: Update an existing estimate in Zoho Books.',
+      'Update Invoice: Update an existing invoice in Zoho Books.',
+      'Update Item: Update an existing item in Zoho Books.',
+      'Update Purchase Order: Update an existing purchase order in Zoho Books.',
+      'Update Sales Order: Update an existing sales order in Zoho Books.'
+    ],
+    search: ['Contacts', 'Invoices', 'Estimates', 'Items', 'Purchase Orders', 'Sales Orders']
+  },
+  'Zoho Desk': {
+    actions: [
+      'Create Event: Adds an event entry to your help desk portal.',
+      'Create Task: Creates a task in your help desk portal.',
+      'Create Ticket: Creates a ticket in your helpdesk.',
+      'Create Ticket Comment: Adds a comment to a ticket.',
+      'Mark Ticket As Read: Marks a ticket as read by the user.',
+      'Update Ticket: Updates the details of an existing ticket.'
+    ],
+    search: ['Tickets', 'Events', 'Tasks', 'Comments', 'Contacts']
+  },
+  'Zoho Projects': {
+    actions: [
+      'Create project: Create a new project in the Zoho Projects portal.',
+      'Create task: Add a task to the project.',
+      'Create task list: Add a Task list to the project.',
+      'Update issue: Update an issue in a project.',
+      'Update phase: Update a phase in a project.',
+      'Update task: Modify details of the task in a project.',
+      'Update task list: Modify details of the task list in a project.'
+    ],
+    search: ['Projects', 'Tasks', 'Milestones', 'Task Lists', 'Issues', 'Phases']
+  },
+  'Google Calendar': {
+    actions: [
+      'Create Calendar Event: Creates an event in your calendar.',
+      'Update Calendar Event: Updates the metadata for an event in your primary calendar.'
+    ],
+    search: ['Events', 'Calendars', 'Attendees', 'Rooms']
+  },
+  'Google Chat': {
+    actions: [
+      'Create space: Creates a chat space in Google Chat.',
+      'Reply to thread: Replies to a chat thread in Google Chat.'
+    ],
+    search: ['Spaces', 'Messages', 'Threads', 'Members']
+  },
+  'Salesforce': {
+    actions: [],
+    search: ['Accounts', 'Contacts', 'Opportunities', 'Leads', 'Cases']
+  },
+  'Microsoft Entra ID': {
+    actions: [],
+    search: ['Users', 'Groups', 'Devices', 'Applications']
+  },
+  'Google Groups': {
+    actions: [],
+    search: ['Groups', 'Members', 'Conversations']
+  },
+  'NotebookLM': {
+    actions: [],
+    search: ['Notebooks', 'Notes', 'Sources']
+  },
+  'Cloud SQL': {
+    actions: [],
+    search: ['Databases', 'Tables', 'Schemas']
+  },
+  'Spanner': {
+    actions: [],
+    search: ['Databases', 'Tables', 'Schemas']
+  },
+  'Firestore': {
+    actions: [],
+    search: ['Collections', 'Documents']
+  },
+  'Bigtable': {
+    actions: [],
+    search: ['Instances', 'Tables', 'Rows']
+  },
+  'AlloyDB': {
+    actions: [],
+    search: ['Databases', 'Tables', 'Schemas']
+  },
+  'Apollo GraphOS': {
+    actions: [],
+    search: ['Graphs', 'Schemas', 'Metrics']
+  },
+  'Blockscout': {
+    actions: [],
+    search: ['Blocks', 'Transactions', 'Contracts']
+  },
+  'Dice': {
+    actions: [],
+    search: ['Jobs', 'Profiles', 'Applications']
+  },
+  'Clinical Trials': {
+    actions: [],
+    search: ['Studies', 'Protocols', 'Results']
+  },
+  'Crossbeam': {
+    actions: [],
+    search: ['Partners', 'Overlaps', 'Accounts']
+  },
+  'Crypto': {
+    actions: [],
+    search: ['Tokens', 'Markets', 'Wallets']
+  },
+  'DocuSign': {
+    actions: [],
+    search: ['Envelopes', 'Templates', 'Documents']
+  },
+  'Excalidraw': {
+    actions: [],
+    search: ['Drawings', 'Libraries', 'Scenes']
+  },
+  'Granted': {
+    actions: [],
+    search: ['Permissions', 'Roles', 'Access Logs']
+  },
+  'GoDaddy': {
+    actions: [],
+    search: ['Domains', 'Certificates', 'DNS Records']
+  },
+  'Hugging Face': {
+    actions: [],
+    search: ['Models', 'Datasets', 'Spaces']
+  },
+  'Invideo': {
+    actions: [],
+    search: ['Videos', 'Templates', 'Projects']
+  },
+  'Kiwi': {
+    actions: [],
+    search: ['Flights', 'Bookings', 'Destinations']
+  },
+  'LastMinute': {
+    actions: [],
+    search: ['Hotels', 'Flights', 'Packages']
+  },
+  'Mermaid Chart': {
+    actions: [],
+    search: ['Diagrams', 'Documents', 'Teams']
+  },
+  'Midpage': {
+    actions: [],
+    search: ['Legal Docs', 'Cases', 'Briefs']
+  },
+  'Microsoft Learn': {
+    actions: [],
+    search: ['Modules', 'Paths', 'Certifications']
+  },
+  'Open Targets': {
+    actions: [],
+    search: ['Targets', 'Diseases', 'Drugs']
+  },
+  'PandaDoc': {
+    actions: [],
+    search: ['Documents', 'Templates', 'Forms']
+  },
+  'Smartsheet': {
+    actions: [],
+    search: ['Sheets', 'Reports', 'Dashboards', 'Workspaces']
+  },
+  'Trivago': {
+    actions: [],
+    search: ['Hotels', 'Deals', 'Reviews']
   }
 };
 
