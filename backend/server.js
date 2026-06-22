@@ -14,21 +14,33 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',') 
   : [];
 
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
-    const isAllowed = allowedOrigins.includes(origin);
-    const isLocaldev = process.env.NODE_ENV !== 'production' && (
-      origin.startsWith('http://localhost:') || 
-      origin.startsWith('http://127.0.0.1:')
-    );
-    if (isAllowed || isLocaldev) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
+const corsOptionsDelegate = (req, callback) => {
+  const origin = req.header('Origin');
+  if (!origin) {
+    return callback(null, { origin: false });
   }
-}));
+
+  const host = req.headers.host;
+  let isSameOrigin = false;
+  try {
+    const originUrl = new URL(origin);
+    isSameOrigin = originUrl.host === host;
+  } catch (e) {}
+
+  const isAllowed = allowedOrigins.includes(origin);
+  const isLocaldev = process.env.NODE_ENV !== 'production' && (
+    origin.startsWith('http://localhost:') || 
+    origin.startsWith('http://127.0.0.1:')
+  );
+
+  if (isSameOrigin || isAllowed || isLocaldev) {
+    callback(null, { origin: true });
+  } else {
+    callback(new Error('Not allowed by CORS'));
+  }
+};
+
+app.use(cors(corsOptionsDelegate));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
