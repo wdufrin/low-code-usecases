@@ -35,7 +35,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Initialize Gemini Client with Vertex AI
 const ai = new GoogleGenAI({
   vertexai: true,
-  project: process.env.GCP_PROJECT || process.env.GOOGLE_CLOUD_PROJECT,
+  project: process.env.GCP_PROJECT || process.env.GOOGLE_CLOUD_PROJECT || (process.env.NODE_ENV !== 'production' ? 'ancient-sandbox-322523' : undefined),
   location: process.env.GCP_LOCATION || 'global', // Use 'global' for Gemini 3.5 support
 });
 

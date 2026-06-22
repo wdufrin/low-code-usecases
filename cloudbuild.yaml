@@ -34,6 +34,8 @@ steps:
       - '--region'
       - 'us-central1'
       - '--allow-unauthenticated'
+      - '--set-env-vars'
+      - 'GCP_PROJECT=$PROJECT_ID'
 
 images:
   - 'gcr.io/$PROJECT_ID/agent-architect:$COMMIT_SHA'
