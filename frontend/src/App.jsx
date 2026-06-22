@@ -25,7 +25,9 @@ export default function App() {
     if (saved) {
       try {
         return JSON.parse(saved);
-      } catch (e) {}
+      } catch (err) {
+        console.warn('Failed to parse disabledConnectors:', err);
+      }
     }
     const allowed = ['outlook', 'sharepoint', 'onedrive', 'gsearch'];
     return CONNECTOR_LIST.map(c => c.id).filter(id => !allowed.includes(id));
@@ -105,6 +107,30 @@ export default function App() {
       {/* Header */}
       <header className="header" style={{ paddingTop: '1rem', position: 'relative' }}>
         <div style={{ position: 'absolute', top: '1rem', right: '0', display: 'flex', gap: '0.75rem' }}>
+          {isAdmin && (
+            <button 
+              onClick={() => setIsSettingsOpen(true)}
+              id="settings-button"
+              className="theme-toggle"
+              title="Workspace Settings"
+              style={{
+                background: 'var(--bg-glass)',
+                border: '1px solid var(--card-border)',
+                padding: '0.6rem',
+                borderRadius: '12px',
+                cursor: 'pointer',
+                color: 'var(--text-primary)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: 'var(--card-shadow)',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              <Settings size={20} />
+            </button>
+          )}
+          
           <button 
             onClick={() => setIsHelpOpen(true)}
             id="help-button"
@@ -269,32 +295,7 @@ export default function App() {
         <HelpModal onClose={() => setIsHelpOpen(false)} />
       )}
 
-      {/* Floating Settings Button */}
-      {isAdmin && (
-        <button 
-          onClick={() => setIsSettingsOpen(true)}
-          className="settings-toggle"
-          style={{
-            position: 'fixed',
-            bottom: '2rem',
-            left: '2rem',
-            background: 'var(--bg-glass)',
-            border: '1px solid var(--card-border)',
-            padding: '0.8rem',
-            borderRadius: '50%',
-            cursor: 'pointer',
-            color: 'var(--text-primary)',
-            boxShadow: 'var(--card-shadow)',
-            zIndex: 9999,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            transition: 'all 0.2s ease'
-          }}
-        >
-          <Settings size={28} />
-        </button>
-      )}
+
     </div>
   );
 }
