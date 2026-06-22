@@ -17,7 +17,12 @@ export default function App() {
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
   const isAdmin = useMemo(() => {
     const params = new URLSearchParams(window.location.search);
-    return params.get('admin') === 'true';
+    for (const [key, value] of params.entries()) {
+      if (key.toLowerCase() === 'admin' && value.toLowerCase() === 'true') {
+        return true;
+      }
+    }
+    return false;
   }, []);
 
   const [disabledConnectors, setDisabledConnectors] = useState(() => {
