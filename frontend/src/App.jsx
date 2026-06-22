@@ -15,9 +15,20 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+  const isAdmin = useMemo(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('admin') === 'true';
+  }, []);
+
   const [disabledConnectors, setDisabledConnectors] = useState(() => {
     const saved = localStorage.getItem('disabledConnectors');
-    return saved ? JSON.parse(saved) : [];
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {}
+    }
+    const allowed = ['outlook', 'sharepoint', 'onedrive'];
+    return CONNECTOR_LIST.map(c => c.id).filter(id => !allowed.includes(id));
   });
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
@@ -259,29 +270,31 @@ export default function App() {
       )}
 
       {/* Floating Settings Button */}
-      <button 
-        onClick={() => setIsSettingsOpen(true)}
-        className="settings-toggle"
-        style={{
-          position: 'fixed',
-          bottom: '2rem',
-          left: '2rem',
-          background: 'var(--bg-glass)',
-          border: '1px solid var(--card-border)',
-          padding: '0.8rem',
-          borderRadius: '50%',
-          cursor: 'pointer',
-          color: 'var(--text-primary)',
-          boxShadow: 'var(--card-shadow)',
-          zIndex: 9999,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          transition: 'all 0.2s ease'
-        }}
-      >
-        <Settings size={28} />
-      </button>
+      {isAdmin && (
+        <button 
+          onClick={() => setIsSettingsOpen(true)}
+          className="settings-toggle"
+          style={{
+            position: 'fixed',
+            bottom: '2rem',
+            left: '2rem',
+            background: 'var(--bg-glass)',
+            border: '1px solid var(--card-border)',
+            padding: '0.8rem',
+            borderRadius: '50%',
+            cursor: 'pointer',
+            color: 'var(--text-primary)',
+            boxShadow: 'var(--card-shadow)',
+            zIndex: 9999,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'all 0.2s ease'
+          }}
+        >
+          <Settings size={28} />
+        </button>
+      )}
     </div>
   );
 }

@@ -10,15 +10,33 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3002; // Support Cloud Run port or align with local dev proxy
 
-app.use(cors());
+const allowedOrigins = process.env.ALLOWED_ORIGINS 
+  ? process.env.ALLOWED_ORIGINS.split(',') 
+  : [];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    const isAllowed = allowedOrigins.includes(origin);
+    const isLocaldev = process.env.NODE_ENV !== 'production' && (
+      origin.startsWith('http://localhost:') || 
+      origin.startsWith('http://127.0.0.1:')
+    );
+    if (isAllowed || isLocaldev) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+}));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Initialize Gemini Client with Vertex AI
 const ai = new GoogleGenAI({
   vertexai: true,
-  project: process.env.GCP_PROJECT || process.env.GOOGLE_CLOUD_PROJECT || 'ancient-sandbox-322523',
-  location: process.env.GCP_LOCATION || 'us-central1', // Standard regional endpoint
+  project: process.env.GCP_PROJECT || process.env.GOOGLE_CLOUD_PROJECT,
+  location: process.env.GCP_LOCATION || 'global', // Use 'global' for Gemini 3.5 support
 });
 
 // Define the schema for the structured output
@@ -41,10 +59,9 @@ const agentSchema = {
     model: { 
       type: 'string', 
       enum: [
-        'Gemini 2.5 Pro', 
-        'Gemini 2.5 Flash', 
-        'Gemini 3.5 Flash', 
-        'Gemini 3.1 Pro (Preview)'
+        'Gemini 3 Flash', 
+        'Gemini 3.1 Pro', 
+        'Gemini 3.5 Flash'
       ],
       description: 'The recommended model name.' 
     },
@@ -575,8 +592,7 @@ app.post('/api/generate', async (req, res) => {
     `;
 
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash', // Using latest allowed model
-
+      model: 'gemini-3.5-flash', // Using gemini-3.5-flash as requested
       contents: prompt,
       config: {
         responseMimeType: 'application/json',
