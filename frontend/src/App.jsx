@@ -27,7 +27,7 @@ export default function App() {
         return JSON.parse(saved);
       } catch (e) {}
     }
-    const allowed = ['outlook', 'sharepoint', 'onedrive'];
+    const allowed = ['outlook', 'sharepoint', 'onedrive', 'gsearch'];
     return CONNECTOR_LIST.map(c => c.id).filter(id => !allowed.includes(id));
   });
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
