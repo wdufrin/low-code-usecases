@@ -35,8 +35,7 @@ export default function App() {
         console.warn('Failed to parse disabledConnectors:', err);
       }
     }
-    const allowed = ['outlook', 'sharepoint', 'onedrive', 'gsearch'];
-    return CONNECTOR_LIST.map(c => c.id).filter(id => !allowed.includes(id));
+    return [];
   });
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);

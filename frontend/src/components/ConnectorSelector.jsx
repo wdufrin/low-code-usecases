@@ -365,6 +365,27 @@ export const CONNECTOR_LIST = [
     permissions: 'OAuth 2.0 (User Context / Ingestion)',
     docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/salesforce/connect-salesforce'
   },
+  {
+    id: 's3', name: 'Amazon S3', icon: HardDrive, color: '#FF9900',
+    syncs: ['Buckets', 'Objects', 'Metadata'],
+    actions: [],
+    permissions: 'AWS Access Keys / IAM Role',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/connect-s3'
+  },
+  {
+    id: 'azure-blob', name: 'Azure Blob Storage', icon: HardDrive, color: '#0078d4',
+    syncs: ['Containers', 'Blobs', 'Metadata'],
+    actions: [],
+    permissions: 'SAS Token / Connection String',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/connect-azure-blob'
+  },
+  {
+    id: 'bitbucket', name: 'Bitbucket', icon: Github, color: '#0052cc',
+    syncs: ['Repositories', 'Commits', 'Pull Requests', 'Branches'],
+    actions: [],
+    permissions: 'OAuth 2.0 / Personal Access Token',
+    docLink: 'https://docs.cloud.google.com/gemini/enterprise/docs/connectors/connect-bitbucket'
+  },
 
   // Google First Party (Kept as read-only/grounding sources unless actions exist)
   { 
@@ -547,7 +568,7 @@ const ConnectorSelector = memo(function ConnectorSelector({ selectedConnectors, 
     'groups', 'notebooklm', 'cloudsql', 'spanner', 'firestore', 'bigtable', 'alloydb'
   ], []);
   const microsoftIds = useMemo(() => ['outlook', 'onedrive', 'sharepoint', 'teams', 'entra-id', 'microsoft-learn'], []);
-  const atlassianIds = useMemo(() => ['jira-cloud', 'jira-dc', 'confluence-cloud', 'confluence-dc'], []);
+  const atlassianIds = useMemo(() => ['jira-cloud', 'jira-dc', 'confluence-cloud', 'confluence-dc', 'bitbucket'], []);
   const zohoIds = useMemo(() => ['zohobooks', 'zohodesk', 'zohoprojects'], []);
 
   const firstPartyConnectors = useMemo(() => connectors.filter(c => google1PIds.includes(c.id)), [connectors, google1PIds]);

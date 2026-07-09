@@ -500,6 +500,49 @@ const CONNECTOR_CAPABILITIES = {
   'Trivago': {
     actions: [],
     search: ['Hotels', 'Deals', 'Reviews']
+  },
+  'Shopify': {
+    actions: [
+      'Create order: Creates a new order in Shopify.',
+      'Send fulfillment request: Sends a fulfillment request for an order.',
+      'Create customer: Creates a new customer profile.',
+      'Update customer: Updates an existing customer profile.'
+    ],
+    search: ['Products', 'Orders', 'Customers', 'Inventory']
+  },
+  'Notion': {
+    actions: [
+      'Create database: Creates a new Notion database.',
+      'Update database: Updates an existing Notion database schema or title.',
+      'Create page: Creates a new page inside a Notion workspace or parent page.',
+      'Update page: Updates the content or properties of a Notion page.',
+      'Create comment: Adds a comment to a Notion page or block.'
+    ],
+    search: ['Pages', 'Databases', 'Blocks']
+  },
+  'BigQuery': {
+    actions: [],
+    search: ['Datasets', 'Tables', 'Views', 'Routines']
+  },
+  'Cloud Storage': {
+    actions: [],
+    search: ['Buckets', 'Objects', 'Metadata']
+  },
+  'Google Search': {
+    actions: [],
+    search: ['Web Pages', 'Knowledge Graph']
+  },
+  'Amazon S3': {
+    actions: [],
+    search: ['Buckets', 'Objects', 'Metadata']
+  },
+  'Azure Blob Storage': {
+    actions: [],
+    search: ['Containers', 'Blobs', 'Metadata']
+  },
+  'Bitbucket': {
+    actions: [],
+    search: ['Repositories', 'Commits', 'Pull Requests', 'Branches']
   }
 };
 
