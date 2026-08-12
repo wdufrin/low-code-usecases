@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Settings, Check, Square } from 'lucide-react';
-import { CONNECTOR_LIST } from './ConnectorSelector';
+import { CONNECTOR_LIST } from '../config/connectorsConfig';
 
 const ConnectorToggleItem = React.memo(({ connector, isDisabled, onToggle }) => {
   const Icon = connector.icon;

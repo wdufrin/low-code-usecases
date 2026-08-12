@@ -3,7 +3,7 @@ import ConnectorSelector from './components/ConnectorSelector';
 import ContextPanel from './components/ContextPanel';
 import AgentCard from './components/AgentCard';
 import { Sparkles, Loader2, Moon, Sun, Settings } from 'lucide-react';
-import { CONNECTOR_LIST } from './components/ConnectorSelector';
+import { CONNECTOR_LIST } from './config/connectorsConfig';
 import SettingsModal from './components/SettingsModal';
 import HelpModal from './components/HelpModal';
 import { HelpCircle } from 'lucide-react';

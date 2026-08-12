@@ -87,7 +87,23 @@ You must authorize your local developer environment so the backend can make call
    gcloud config set project your-gcp-project-id
    ```
 
-### Step 2: Start the Servers
+### Step 2: Configure Visible Connectors (Optional)
+By default, all enterprise connectors are enabled. If you want to disable specific connectors for default users before starting the server, you have two options:
+
+* **Option A: Static Config File**
+  Open [frontend/src/config/connectorsConfig.js](file:///usr/local/google/home/wdufrin/Documents/Code/low-code%20usecases/frontend/src/config/connectorsConfig.js) and locate the `ALL_CONNECTORS` array. Set `enabled: false` on any connector you want to hide globally.
+
+* **Option B: Environment Variable**
+  Set the `VITE_DISABLED_CONNECTORS` environment variable to a comma-separated list of connector IDs (e.g., `shopify,salesforce`):
+  ```bash
+  # Linux / macOS
+  export VITE_DISABLED_CONNECTORS="shopify,salesforce"
+
+  # Windows (PowerShell)
+  $env:VITE_DISABLED_CONNECTORS="shopify,salesforce"
+  ```
+
+### Step 3: Start the Servers
 You can run the application using the automated monorepo scripts or start the services manually.
 
 #### Method A: Monorepo Orchestration (Recommended)
@@ -146,3 +162,26 @@ gcloud builds submit --config cloudbuild.yaml
 3. **Docker Build**: Builds the container image using the `backend/Dockerfile` with `backend/` as the build context.
 4. **Push Image**: Pushes the compiled image to Google Container Registry (GCR).
 5. **Deploy to Cloud Run**: Deploys the service named `agent-architect` to the `us-central1` region on Cloud Run, setting it to allow unauthenticated public traffic.
+
+---
+
+## ⚙️ Configuring Connector Visibility
+
+You can control which third-party and first-party connectors are visible and available to users in your deployment. There are three configuration methods:
+
+### 1. Static Configuration File (Pre-deployment)
+Open [frontend/src/config/connectorsConfig.js](file:///usr/local/google/home/wdufrin/Documents/Code/low-code%20usecases/frontend/src/config/connectorsConfig.js). You will see the `ALL_CONNECTORS` array. Set `enabled: false` on any connector to completely compile it out of the application.
+
+### 2. Environment Variables (Deploy-time / CI-CD)
+Set the environment variable `VITE_DISABLED_CONNECTORS` during the frontend build step. It accepts a comma-separated list of connector IDs (e.g. `shopify,salesforce,zohobooks`) to hide.
+
+E.g. locally or in your deploy scripts:
+```bash
+export VITE_DISABLED_CONNECTORS="shopify,salesforce"
+```
+
+### 3. Runtime Admin Panel
+Admins can customize visible connectors in the UI dynamically:
+1. Load the page with `?admin=true` in the URL query string (e.g., `http://localhost:5173/?admin=true`).
+2. A settings gear icon will appear in the bottom-left corner of the page.
+3. Click the gear icon to toggle connector visibility. These preferences are stored in the user's browser `localStorage` under `disabledConnectors`.
